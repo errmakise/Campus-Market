@@ -26,15 +26,15 @@ const searchQuery = ref("");
 }
 
 .section {
-  margin-left: 1.066vh;
-  margin-right: 2.133vh;
+  width: 93vw;
   padding: 0.8vh 1.4vh 0.8vh 1.8vh;
   background-color: #ffffff;
   border-radius: 5.924vh;
 }
 
 .image {
-  height: 2.2vh;
+  height: 2vh;
+  margin-left: 5px;
 }
 
 .divider {

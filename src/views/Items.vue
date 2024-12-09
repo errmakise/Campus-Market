@@ -19,7 +19,7 @@
 
       </van-pull-refresh>
     </div>
-
+    <BottomNav />
   </div>
 </template>
 
@@ -31,6 +31,7 @@ import SearchBar from '@/components/SearchBar.vue';
 import { getItems } from '@/api/api.js';
 import ItemCard from '@/components/ItemCard.vue';
 import { PullRefresh } from 'vant';
+import BottomNav from '@/components/BottomNav.vue';
 
 // 引入 Vant 组件
 PullRefresh;

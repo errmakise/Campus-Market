@@ -9,6 +9,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'HarmonyOS Sans';
+  src: url('@/assets/fonts/HarmonyOS_Sans.ttf') format('truetype'); /* 请根据实际文件名调整路径 */
+  font-weight: normal;
+  font-style: normal;
+}
+
 html {
   font-size: 16px;
 }
@@ -16,7 +23,8 @@ html {
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'ali', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Microsoft Yahei', sans-serif;
+    'Cantarell', 'ali', 'HarmonyOS Sans', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'Microsoft Yahei', sans-serif;
 }
 
 body * {

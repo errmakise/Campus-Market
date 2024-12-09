@@ -1,15 +1,15 @@
 <template>
 
   <div class="nav">
-    <RouterLink v-for="(icon, index) in navIconsL" :key="index" :to="icon.route"
-        @click="activeTab = icon.label" class="icons">
-        <img :src="activeTab === icon.label? icon.se : icon.unse" class="icon">
-      </RouterLink>
+    <RouterLink v-for="(icon, index) in navIconsL" :key="index" :to="icon.route" @click="activeTab = icon.label"
+      class="icons">
+      <img :src="activeTab === icon.label ? icon.se : icon.unse" class="icon">
+    </RouterLink>
     <img src="@/assets/images/post.png" class="post">
-    <RouterLink v-for="(icon, index) in navIconsR" :key="index" :to="icon.route"
-        @click="activeTab = icon.label" class="icons">
-        <img :src="activeTab === icon.label? icon.se : icon.unse" class="icon">
-      </RouterLink>
+    <RouterLink v-for="(icon, index) in navIconsR" :key="index" :to="icon.route" @click="activeTab = icon.label"
+      class="icons">
+      <img :src="activeTab === icon.label ? icon.se : icon.unse" class="icon">
+    </RouterLink>
   </div>
 </template>
 
@@ -23,7 +23,7 @@ import messageUnselected from '@/assets/images/message-unselected.png';
 import userSelected from '@/assets/images/user-selected.png';
 import userUnselected from '@/assets/images/user-unselected.png';
 
-const props=defineProps({
+const props = defineProps({
   nowView: {
     type: String,
     default: '悬赏'
@@ -33,7 +33,7 @@ const activeTab = ref(props.nowView);
 const navIconsL = ref([
   {
     label: '悬赏',
-    se:taskSelected,
+    se: taskSelected,
     unse: taskUnselected,
     route: '/task'
   },
@@ -91,12 +91,13 @@ const navIconsR = ref([
   background-repeat: no-repeat;
 
   position: fixed;
-  left: 5px;
-  right: 5px;
+  left: 8px;
+  right: 8px;
   bottom: 0;
-  height: 12.67vh;
+  height: 12vh;
   display: flex;
   justify-content: space-between;
-
+  padding-left: 10px;
+  padding-right: 10px;
 }
 </style>

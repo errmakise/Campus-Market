@@ -8,30 +8,30 @@
     </div>
 
     <div class="post-content">
-      <textarea
-        v-model="postContent"
-        placeholder="具体悬赏内容"
-        class="post-textarea"
-        maxlength="200"
-      ></textarea>
+      <textarea v-model="postContent" placeholder="输入帖子内容" class="post-textarea" maxlength="200"></textarea>
       <div class="content-line2">
-        <van-uploader
-          preview-size="18.5vw"
-          class="uploader"
-          v-model="fileList"
-          multiple
-          :max-count="3"
-        />
+        <van-uploader preview-size="18.5vw" class="uploader" v-model="fileList" multiple :max-count="3" />
         <p class="textPrompt">{{ postContent.length }}/200</p>
       </div>
     </div>
 
+    <div class="post-content">
 
+      <span class="title">标题</span>
+      <div class="post-title">
+        <div class="title-line1">
+          <textarea v-model="postTitle" placeholder="输入标题" class="title-content" maxlength="20"></textarea>
+          <img src="@/assets/images/x.png" alt="x" class="x" />
+        </div>
+        <p class="textPrompt">{{ postTitle.length }}/20</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 const postContent = ref('')
+const postTitle = ref('')
 
 // 响应式的文件列表
 const fileList = ref([
@@ -52,13 +52,49 @@ const removeImage = (file) => {
 </script>
 
 <style scoped>
+.title-line1 {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.post-title {
+  width: 100%;
+  resize: none;
+  background-color: #F5F5F5;
+  border-radius: 10px;
+  margin-top: 1vh;
+  padding: 5px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.title-content {
+  height: 6vh;
+  width: 90%;
+  border: none;
+  background-color: #F5F5F5;
+  resize: none;
+}
+
+.textPrompt {
+  margin: 5px 0;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .content-line2 {
   display: flex;
   align-items: end;
   justify-content: space-between;
 }
-.uploader {
-}
+
+.uploader {}
+
 .post-content {
   margin-top: 1.5vh;
   width: 90vw;
@@ -71,6 +107,7 @@ const removeImage = (file) => {
   font-family: 'ali', sans-serif;
   font-size: 14px;
 }
+
 .post-textarea {
   width: 100%;
   height: 20vh;
@@ -100,9 +137,11 @@ const removeImage = (file) => {
   padding-right: 3vw;
   align-items: center;
 }
+
 .x {
   height: 24px;
 }
+
 .container {
   background-color: #fafafa;
   width: 100vw;

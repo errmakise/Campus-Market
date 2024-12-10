@@ -1,14 +1,12 @@
 <template>
   <div class="container">
-    <TaskSwipe></TaskSwipe>
-    <TaskCard></TaskCard>
+    <TasksTagsBar></TasksTagsBar>
   </div>
 </template>
 
 <script setup>
-import TaskCard from '@/components/TaskCard.vue';
-import TaskSwipe from '@/components/TaskSwipe.vue';
 
+import TasksTagsBar from '@/components/TasksTagsBar.vue';
 
 </script>
 

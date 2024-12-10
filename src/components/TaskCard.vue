@@ -15,7 +15,6 @@
     <div class="card-bottom">
       <span class="card-price">酬金:￥{{ props.reward }}</span>
       <button :class="'round-button'" @click="handleClick">
-        <img v-if="iconPath" :src="iconPath" alt="icon" class="button-icon" :style="{ height: buttonData.iconSize }" />
         <span>接单</span>
       </button>
     </div>

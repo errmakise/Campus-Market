@@ -1,11 +1,15 @@
 <template>
   <div class="container">
-    <TasksTagsBar></TasksTagsBar>
+
+    <TasksCatogories />
+
+
   </div>
 </template>
 
 <script setup>
 
+import TasksCatogories from '@/components/TasksCatogories.vue';
 import TasksTagsBar from '@/components/TasksTagsBar.vue';
 
 </script>

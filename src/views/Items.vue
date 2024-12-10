@@ -140,7 +140,7 @@ onMounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: 4.8vh;
+  padding-top: 4.5vh;
   align-items: center;
   gap: 1.777vh;
   overflow-x: hidden;

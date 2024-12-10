@@ -1,10 +1,6 @@
 <template>
   <div class="scrollBarWrapper" :style="scrollBarWrapperStyle">
-    <div
-      class="scrollBarContent"
-      :class="direction === 'y' ? 'directionY' : 'directionX'"
-      ref="scrollBarContent"
-    >
+    <div class="scrollBarContent" :class="direction === 'y' ? 'directionY' : 'directionX'" ref="scrollBarContent">
       <slot></slot>
     </div>
   </div>
@@ -93,10 +89,15 @@ onMounted(() => {
 <style lang="scss" scoped>
 .scrollBarWrapper {
   position: relative;
-  max-width: 300px;
+  max-width: 90%;
   overflow: hidden;
   user-select: none;
   vertical-align: middle;
+  /* 只虚化右侧 */
+  mask-image: linear-gradient(to right, rgb(0, 0, 0) 80%, rgba(0, 0, 0, 0));
+  -webkit-mask-image: linear-gradient(to right, rgb(0, 0, 0) 80%, rgba(0, 0, 0, 0));
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
 
   .scrollBarContent {
     max-width: 100%;
@@ -104,11 +105,7 @@ onMounted(() => {
     word-break: keep-all;
     -webkit-overflow-scrolling: touch;
 
-    /* 只虚化右侧 */
-    mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0));
-    -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0));
-    mask-size: 100% 100%;
-    mask-repeat: no-repeat;
+
 
     &.directionX {
       overflow-x: scroll;
@@ -126,6 +123,4 @@ onMounted(() => {
     }
   }
 }
-
-
 </style>

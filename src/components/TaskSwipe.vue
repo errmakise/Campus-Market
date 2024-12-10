@@ -1,33 +1,36 @@
 <template>
-  <div class="container">
-    <van-swipe :autoplay="3000" indicator-color="white">
-      <van-swipe-item class="content" v-for="(task, index) in props.tasks" :key="index">
-        <div class="line1">
-          <span class="deadLine">截止时间：{{ task.deadLine }} </span>
-          <span class="createdAt"> {{ formatDate(task.createdAt) }}</span>
-        </div>
-
-        <div class="title">{{ task.title }}</div>
-
-        <div class="bottom">
-          <div class="part1">
-            <span class="location">{{ task.location }}</span>
-            <span class="distance">{{ task.distance }}</span>
+  <div>
+    <div class="container">
+      <van-swipe class="content" :autoplay="3000" indicator-color="white">
+        <van-swipe-item class="item" v-for="(task, index) in props.tasks" :key="index">
+          <div class="line1">
+            <span class="deadLine">截止时间：{{ task.deadLine }} </span>
+            <span class="createdAt"> {{ formatDate(task.createdAt) }}</span>
           </div>
 
+          <div class="title">{{ task.title }}</div>
 
-          <div class="part2">
-            <span class="reward">酬金: ￥{{ task.reward }}</span>
-            <button class="round-button" @click="handleClick">
-              <img v-if="iconPath" :src="iconPath" alt="icon" class="button-icon"
-                :style="{ height: buttonData.iconSize }" />
-              <span>接单</span>
-            </button>
+          <div class="bottom">
+            <div class="part1">
+              <span class="location">{{ task.location }}</span>
+              <span class="distance">{{ task.distance }}</span>
+            </div>
+
+
+            <div class="part2">
+              <span class="reward">酬金: ￥{{ task.reward }}</span>
+              <button class="round-button" @click="handleClick">
+                <img v-if="iconPath" :src="iconPath" alt="icon" class="button-icon"
+                  :style="{ height: buttonData.iconSize }" />
+                <span>接单</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </van-swipe-item>
-    </van-swipe>
+        </van-swipe-item>
+      </van-swipe>
+    </div>
   </div>
+
 
 </template>
 
@@ -101,6 +104,7 @@ const formatDate = (timestamp) => {
   align-items: center;
 }
 
+
 .location {
   padding-right: 4vw;
 }
@@ -117,21 +121,24 @@ const formatDate = (timestamp) => {
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
 
+
 }
 
-.container {
-  width: 87.7vw;
-}
+.container {}
 
 .content {
-  display: flex;
-  flex-direction: column;
-  padding: 1vh 1.5vh;
   background-color: #ffffff;
   height: 14.5vh;
   border-radius: 15px;
-  justify-content: space-between;
+  width: 90vw;
+}
 
+.item {
+  display: flex;
+  flex-direction: column;
+  padding: 1vh 1.5vh;
+  height: 100%;
+  justify-content: space-between;
 }
 
 .deadLine {

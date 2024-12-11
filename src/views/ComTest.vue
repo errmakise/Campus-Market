@@ -1,17 +1,15 @@
 <template>
   <div class="container">
 
-    <TasksCatogories />
-
+    <InputFrame v-model="text" fontSize="18px" :maxWidth="500" placeholder="请输入内容" type="number" />
 
   </div>
 </template>
 
 <script setup>
-
-import TasksCatogories from '@/components/TasksCatogories.vue';
-import TasksTagsBar from '@/components/TasksTagsBar.vue';
-
+import InputFrame from "@/components/InputFrame.vue";
+import { ref, watch } from "vue";
+const text = ref("");
 </script>
 
 <style scoped>

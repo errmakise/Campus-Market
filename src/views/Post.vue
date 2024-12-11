@@ -7,21 +7,11 @@
       </button>
     </div>
 
-    <div class="post-content">
-      <textarea
-        v-model="postContent"
-        placeholder="输入帖子内容"
-        class="post-textarea"
-        maxlength="200"
-      ></textarea>
+
+    <div class="post-content" style="margin-top: 7vh;">
+      <textarea v-model="postContent" placeholder="输入帖子内容" class="post-textarea" maxlength="200"></textarea>
       <div class="content-line2">
-        <van-uploader
-          preview-size="18.5vw"
-          class="uploader"
-          v-model="fileList"
-          multiple
-          :max-count="3"
-        />
+        <van-uploader preview-size="18.5vw" class="uploader" v-model="fileList" multiple :max-count="3" />
         <p class="textPrompt">{{ postContent.length }}/200</p>
       </div>
     </div>
@@ -30,13 +20,8 @@
       <span class="title">标题</span>
       <div class="post-title">
         <div class="title-line1">
-          <textarea
-            v-model="postTitle"
-            placeholder="输入标题"
-            class="title-content"
-            maxlength="20"
-            clearable="true"
-          ></textarea>
+          <textarea v-model="postTitle" placeholder="输入标题" class="title-content" maxlength="20"
+            clearable="true"></textarea>
           <img src="@/assets/images/x.png" alt="x" class="x" />
         </div>
         <p class="textPrompt">{{ postTitle.length }}/20</p>
@@ -44,13 +29,8 @@
 
       <div class="title">悬赏类型</div>
       <div class="categories">
-        <div
-          class="item"
-          v-for="(item, index) in categories"
-          :key="index"
-          @click="changeCate(item, index)"
-          :class="index === activeIndex ? 'active' : null"
-        >
+        <div class="item" v-for="(item, index) in categories" :key="index" @click="changeCate(item, index)"
+          :class="index === activeIndex ? 'active' : null">
           <span class="category-name">{{ item.name }}</span>
         </div>
       </div>
@@ -65,21 +45,40 @@
 
         <div class="reward-amount">
           ￥
-          <input v-model="reward" type="number"
-          class="amount" :disabled="isDiscussed"
-           :style="{ width: Math.max(reward.length * 12, 50) + 'px' }"/>
+          <InputFrame v-model="reward" maxWidth="150" type="number" class="amount" :disabled="isDiscussed" />
         </div>
       </div>
+
+
+
     </div>
+    <div class="post-content" style="margin-bottom: 10vh;">
+      <div class="post-phone">
+        <div class="title">联系方式</div>
+        <InputFrame v-model="phone" maxLength="11" type="number" placeholder="请输入手机号" />
+      </div>
+
+      <div class="post-address">
+        <div class="title">任务地点</div>
+        <div class="address"> {{ address }}</div>
+
+        <img src="@/assets/images/right.png" alt="right" class="right">
+      </div>
+    </div>
+
   </div>
+
 </template>
 
 <script setup>
+import InputFrame from '@/components/InputFrame.vue';
+const address = ref('无')
 const postContent = ref('')
 const postTitle = ref('')
 const activeIndex = ref(0)
 const isDiscussed = ref(false)
 const reward = ref('0')
+const phone = ref('')
 
 const toBeDiscussed = () => {
   isDiscussed.value = !isDiscussed.value
@@ -124,11 +123,35 @@ const handleAfterRead = (file) => {
 </script>
 
 <style scoped>
+.right {
+  height: 20px;
+}
+
+.address {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  max-width: 60%;
+}
+
+.post-address {
+  display: flex;
+  align-items: center;
+}
+
+.post-phone {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4vh;
+}
+
 .reward {
   display: flex;
   justify-content: space-between;
   width: 100%;
+
 }
+
 .amount {
   flex-shrink: 0;
   padding: 0px 2px;
@@ -137,6 +160,7 @@ const handleAfterRead = (file) => {
 
 
 }
+
 .reward-amount {
   font-size: 12px;
   display: flex;
@@ -144,9 +168,11 @@ const handleAfterRead = (file) => {
 
 
 }
+
 .reward-part1 {
   display: flex;
 }
+
 .item {
   border-radius: 20px;
   border: none;
@@ -161,6 +187,7 @@ const handleAfterRead = (file) => {
   background-color: #4794ff;
   color: #ffffff;
 }
+
 .categories {
   display: flex;
   flex-wrap: wrap;
@@ -215,8 +242,7 @@ const handleAfterRead = (file) => {
   justify-content: space-between;
 }
 
-.uploader {
-}
+.uploader {}
 
 .post-content {
   margin-top: 1.5vh;
@@ -229,6 +255,7 @@ const handleAfterRead = (file) => {
   justify-content: space-between;
   font-family: 'ali', sans-serif;
   font-size: 14px;
+  height: auto;
 }
 
 .post-textarea {
@@ -252,13 +279,16 @@ const handleAfterRead = (file) => {
 }
 
 .top {
+  position: fixed;
   display: flex;
   justify-content: space-between;
   width: 100%;
+  padding-top: 1vh;
   height: 5vh;
   padding-left: 3vw;
   padding-right: 3vw;
   align-items: center;
+  background-color: #fafafa;
 }
 
 .x {
@@ -271,7 +301,6 @@ const handleAfterRead = (file) => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: 1vh;
   align-items: center;
   overflow-x: hidden;
 }

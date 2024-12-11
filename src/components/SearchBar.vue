@@ -1,9 +1,20 @@
 <script setup>
 const searchQuery = ref("");
+
+const props = defineProps({
+  placeholder: {
+    type: String,
+    default: "请输入搜索内容",
+  },
+  barType: {
+    type: String,
+    default: "home",
+  },
+})
 </script>
 
 <template>
-  <div class="flex-row justify-between items-center section">
+  <div v-if="props.barType === 'home'" class="flex-row justify-between items-center section">
     <img class="image" src="@/assets/images/search.png" />
     <input type="text" class="search-input" placeholder="请输入搜索内容" v-model="searchQuery" />
     <div class="flex-row items-center">
@@ -11,9 +22,47 @@ const searchQuery = ref("");
       <span class="ml-8 text">搜索</span>
     </div>
   </div>
+
+  <div v-else class="top">
+    <img class="left-round" src="@/assets/images/left-round.png" alt="left-round" />
+    <dix class="search-bar2">
+      <input class="search-input" type="text" placeholder="搜索" />
+      <img src="@/assets/images/search2.png" style="height: 20px;" />
+    </dix>
+  </div>
+
+
 </template>
 
 <style>
+.top {
+  display: flex;
+  width: 100%;
+  padding: 2vh 2vw;
+  position: fixed;
+
+}
+
+.left-round {
+  height: 42px;
+}
+
+.search-bar2 {
+
+  display: flex;
+  width: 80vw;
+  justify-content: space-between;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  padding-right: 8px;
+  margin-left: 5px;
+  align-items: center;
+  height: 40px;
+}
+
+
+
 .search-input {
   flex-grow: 1;
   border: none;

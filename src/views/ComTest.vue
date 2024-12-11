@@ -1,13 +1,14 @@
 <template>
   <div class="container">
 
-    <InputFrame v-model="text" fontSize="18px" :maxWidth="500" placeholder="请输入内容" type="number" />
-
+    <TaskCard />
   </div>
 </template>
 
 <script setup>
 import InputFrame from "@/components/InputFrame.vue";
+import SearchBar from "@/components/SearchBar.vue";
+import TaskCard from "@/components/TaskCard.vue";
 import { ref, watch } from "vue";
 const text = ref("");
 </script>

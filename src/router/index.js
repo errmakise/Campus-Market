@@ -6,33 +6,38 @@ const router = createRouter({
     {
       path: '/',
       name: 'test',
-      component: () => import('../views/ComTest.vue')
+      component: () => import('../views/ComTest.vue'),
     },
     {
-      path:'/tasks',
-      name:'tasks',
-      component:()=>import('../views/Tasks.vue')
+      path: '/tasks',
+      name: 'tasks',
+      component: () => import('../views/Tasks.vue'),
     },
     {
-      path:'/post',
-      name:'post',
-      component:()=>import('../views/Post.vue')
+      path: '/publish',
+      name: 'publish',
+      component: () => import('../views/Publish.vue'),
     },
     {
-      path:'/items',
-      name:'items',
-      component:()=>import('../views/Items.vue')
+      path: '/post',
+      name: 'post',
+      component: () => import('../views/PostDetail.vue'),
     },
     {
-      path:'/messages',
-      name:'messages',
-      component:()=>import('../views/Messages.vue')
+      path: '/items',
+      name: 'items',
+      component: () => import('../views/Items.vue'),
     },
     {
-      path:'/user',
-      name:'user',
-      component:()=>import('../views/User.vue')
-    }
+      path: '/messages',
+      name: 'messages',
+      component: () => import('../views/Messages.vue'),
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/User.vue'),
+    },
   ],
 })
 

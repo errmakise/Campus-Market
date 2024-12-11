@@ -16,9 +16,9 @@
           </div>
         </div>
         <div v-if="loading" class="loading-indicator">正在加载...</div>
-
       </van-pull-refresh>
     </div>
+
     <BottomNav />
   </div>
 </template>
@@ -123,11 +123,9 @@ onMounted(() => {
 
 .masonry-column {
   flex: 1;
-  /* 确保每列均分宽度 */
   display: flex;
   flex-direction: column;
   gap: 4px;
-  /* 列内卡片的间距 */
   margin-left: 4px;
   margin-right: 4px;
 }
@@ -144,7 +142,6 @@ onMounted(() => {
   align-items: center;
   gap: 1.777vh;
   overflow-x: hidden;
-
 }
 
 .loading-indicator {

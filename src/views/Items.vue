@@ -3,7 +3,7 @@
     <!-- 搜索框组件 -->
     <SearchBar />
     <!-- 分类组件 -->
-    <ItemsCategories />
+    <CategoryGrid :categories="categories" />
 
     <!-- 商品瀑布流列表 -->
     <div class="items" @scroll="handleScroll" ref="masonryContainer">
@@ -25,6 +25,20 @@
 
 <script setup>
 
+const categories = [
+  { icon: 'digital', label: '数码产品' },
+  { icon: 'study', label: '学习资料' },
+  { icon: 'games', label: '游戏' },
+
+  { icon: 'fashion', label: '服饰美妆' },
+  { icon: 'tickets', label: '门票' },
+
+  { icon: 'accounts', label: "账号会员" },
+  { icon: 'instruments', label: "乐器" },
+  { icon: 'food', label: "餐饮代购" },
+  { icon: 'sports', label: "运动用品" },
+  { icon: 'others', label: "其他" },
+]
 import { ref, onMounted } from 'vue';
 import ItemsCategories from '@/components/ItemsCategories.vue';
 import SearchBar from '@/components/SearchBar.vue';
@@ -142,6 +156,7 @@ onMounted(() => {
   align-items: center;
   gap: 1.777vh;
   overflow-x: hidden;
+  font-family: 'ali',sans-serif;
 }
 
 .loading-indicator {

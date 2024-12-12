@@ -15,16 +15,16 @@
   </div>
 </template>
 <script setup>
-import digitalIcon from "@/assets/images/items/digital.png";
-import studyIcon from "@/assets/images/items/study.png";
-import foodIcon from "@/assets/images/items/food.png";
-import fashionIcon from "@/assets/images/items/fashion.png";
-import ticketsIcon from "@/assets/images/items/tickets.png";
-import instrumentsIcon from "@/assets/images/items/instruments.png";
-import accountsIcon from "@/assets/images/items/accounts.png";
-import gamesIcon from "@/assets/images/items/games.png";
-import sportsIcon from "@/assets/images/items/sports.png";
-import othersIcon from "@/assets/images/items/others.png";
+import digitalIcon from "@/assets/images/categories/digital.png";
+import studyIcon from "@/assets/images/categories/study.png";
+import foodIcon from "@/assets/images/categories/food.png";
+import fashionIcon from "@/assets/images/categories/fashion.png";
+import ticketsIcon from "@/assets/images/categories/tickets.png";
+import instrumentsIcon from "@/assets/images/categories/instruments.png";
+import accountsIcon from "@/assets/images/categories/accounts.png";
+import gamesIcon from "@/assets/images/categories/games.png";
+import sportsIcon from "@/assets/images/categories/sports.png";
+import othersIcon from "@/assets/images/categories/others.png";
 const categories1 = [
   { icon: digitalIcon, label: "数码产品" },
   { icon: studyIcon, label: "学习资料" },

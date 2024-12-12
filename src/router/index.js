@@ -34,6 +34,51 @@ const router = createRouter({
       component: () => import('../views/Items.vue'),
     },
     {
+      path: '/items/digital',
+      name: 'digital',
+      component: () => import('../views/item-catogories/Digital.vue'),
+    },
+    {
+      path: '/items/fashion',
+      name: 'fashion',
+      component: () => import('../views/item-catogories/Fashion.vue'),
+    },
+    {
+      path: '/items/food',
+      name: 'food',
+      component: () => import('../views/item-catogories/Food.vue'),
+    },
+    {
+      path: '/items/games',
+      name: 'games',
+      component: () => import('../views/item-catogories/Games.vue'),
+    },
+    {
+      path: '/items/others',
+      name: 'others',
+      component: () => import('../views/item-catogories/Others.vue'),
+    },
+    {
+      path: '/items/instrument',
+      name: 'instrument',
+      component: () => import('../views/item-catogories/Instrument.vue'),
+    },
+    {
+      path: '/items/sports',
+      name: 'sports',
+      component: () => import('../views/item-catogories/Sports.vue'),
+    },
+    {
+      path: '/items/study',
+      name:'study',
+      component: () => import('../views/item-catogories/Study.vue'),
+    },
+    {
+      path: '/items/tickets',
+      name:'tickets',
+      component: () => import('../views/item-catogories/Tickets.vue'),
+    },
+    {
       path: '/messages',
       name: 'messages',
       component: () => import('../views/Messages.vue'),

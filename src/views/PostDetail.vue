@@ -1,9 +1,6 @@
 <template>
-
-
-
   <div class="container">
-    <SearchBar barType="tasks" style="height:9.5vh ;background-color: white;" />
+    <SearchBar barType="tasks" style="height: 9.5vh; background-color: white" />
 
     <div class="post">
       <div class="part">
@@ -14,66 +11,32 @@
             </div>
 
             <div class="publisher-info">
-              <div class="publisher-name">
-                张三
-              </div>
+              <div class="publisher-name">张三</div>
               <div class="publisher-time">
                 {{ formattedTime }}
               </div>
             </div>
-
           </div>
 
           <button class="follow-button" :style="buttonStyle" @click="handleClick">
             <img src="@/assets/images/follow.png" alt="icon" class="button-icon" />
             <span>关注</span>
           </button>
-
         </div>
 
         <div class="divider"></div>
-
-        <div class="post-text">
-          <span style="color:#707070">截止时间：</span>
-          <span>{{ deadline }}</span>
-        </div>
-
-        <div class="post-text">
-          <span style="color:#707070">酬金：</span>
-          <span>￥{{ reward }}</span>
-        </div>
-
-        <div class="post-text">
-          <span style="color:#707070">任务地点：</span>
-          <span>{{ address }}</span>
-        </div>
-
-        <div class="post-text">
-          <span style="color:#707070">委托详情：</span>
-          <span>{{ content }}</span>
-        </div>
-
-        <div class="image-gallery">
-          <img v-for="(image, index) in images" :key="index" :src="image" />
-        </div>
-
-        <div class="part1-bottom">
-          <div class="tags">
-            <span v-for="tag in tags" :key="tag" class="tag">
-              #{{ tag }}
-            </span>
-          </div>
-
-          <div class="report-button">
-            <span>举报</span>
-          </div>
-        </div>
-
-
+        <PostContent
+          :deadline="deadline"
+          :reward="reward"
+          :address="address"
+          :content="content"
+          :images="images"
+          :tags="tags"
+        />
       </div>
 
       <div class="part">
-        <span style="font-size: 16px;font-weight: 600;">评论</span>
+        <span style="font-size: 16px; font-weight: 600">评论</span>
         <div class="publish-comment">
           <div class="image-container">
             <img :src="userAvator" class="publisher-avator" />
@@ -81,83 +44,53 @@
           <input class="input-frame" type="text" placeholder="点击发布评论" v-model="comment" />
         </div>
 
-        <div class="comment-list">
-
-        </div>
+        <div class="comment-list"></div>
 
         <div class="show-comment">
           <span>查看全部评论</span>
-          <img src="@/assets/images/right.png">
+          <img src="@/assets/images/right.png" />
         </div>
-
       </div>
 
-      <div class="part" style="margin-bottom: 10vh;">
-        <div style="font-size: 16px;display: flex;justify-content: center;">
-          为你推荐</div>
-
-
+      <div class="part" style="margin-bottom: 10vh">
+        <div style="font-size: 16px; display: flex; justify-content: center">为你推荐</div>
       </div>
     </div>
 
-
-    <div class="bottom-bar">
-
-      <div class="bottom-icon-button">
-        <img src="@/assets/images/comment.png" alt="icon" class="buttom-icon" />
-        {{ commentCount }}
-      </div>
-      <div class="bottom-icon-button">
-        <img src="@/assets/images/favourite.png" alt="icon" class="buttom-icon" />
-        {{ favouriteCount }}
-      </div>
-
-      <div class="bottom-icon-button">
-        <img src="@/assets/images/like.png" alt="icon" class="buttom-icon" />
-        {{ likeCount }}
-      </div>
-
-      <button class="chat-button" @click="handleClick">
-        <span>私聊</span>
-      </button>
-
-      <button class="accept-button" @click="handleClick">
-        <img src="@/assets/images/accept-icon.png" class="accept-icon">
-        <span>接单</span>
-      </button>
-
-    </div>
-
-
-
+     <PostBottomBar :commentCount="commentCount"
+    :favouriteCount="favouriteCount"
+    :likeCount="likeCount"
+    barType="post"
+    />
 
   </div>
 
 </template>
 
 <script setup>
+import PostContent from '@/components/PostContent.vue'
+import SearchBar from '@/components/SearchBar.vue'
+import { formatTime } from '@/utils/timeFormatter'
+const comment = ref('')
 
-import SearchBar from '@/components/SearchBar.vue';
-import { formatTime } from '@/utils/timeFormatter';
-const comment = ref('');
-
-const tags = ref(['任务', '求助']);
+const tags = ref(['任务', '求助'])
 const publisherAvator = ref('https://img.yzcdn.cn/vant/cat.jpeg')
 const userAvator = ref('https://img.yzcdn.cn/vant/cat.jpeg')
 
-const createdAt = ref('2023-07-11T11:50:00.000Z');
-const formattedTime = computed(() => formatTime(createdAt.value));
-const deadline = ref('2023-07-11T11:50:00.000Z');
-const reward = ref('1000');
-const address = ref('上海市');
+const createdAt = ref('2023-12-11T11:50:00.000Z')
+const formattedTime = computed(() => formatTime(createdAt.value))
+const deadline = ref('2023-07-11T11:50:00.000Z')
+const reward = ref('1000')
+const address = ref('上海市')
 const content = ref('我是任务详情')
-const images = ref(['https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
-  'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',])
+const images = ref([
+  'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+  'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
+])
 
-const commentCount = ref('100');
-const favouriteCount = ref('100');
-const likeCount = ref('100');
-
+const commentCount = ref('120')
+const favouriteCount = ref('100')
+const likeCount = ref('100')
 </script>
 
 <style scoped>
@@ -178,7 +111,7 @@ const likeCount = ref('100');
   margin-left: 4vw;
   border-radius: 10px;
   border: none;
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
   padding: 0vh 3vw;
 }
 
@@ -210,8 +143,8 @@ const likeCount = ref('100');
   align-items: center;
   height: 5vh;
   padding: 0vh 3vw;
-  color: #FFFFFF;
-  background-color: #613EEA;
+  color: #ffffff;
+  background-color: #613eea;
   margin-left: 2vw;
   margin-right: 2vw;
 
@@ -228,7 +161,7 @@ const likeCount = ref('100');
   align-items: center;
   height: 5vh;
   padding: 0vh 5vw;
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   margin-left: auto;
 
   color: #000000;
@@ -249,8 +182,6 @@ const likeCount = ref('100');
   align-items: center;
 }
 
-
-
 .bottom-icon-button {
   display: flex;
   flex-direction: column;
@@ -265,9 +196,6 @@ const likeCount = ref('100');
   height: 3.2vh;
 }
 
-
-
-
 .part1-bottom {
   display: flex;
   justify-content: space-between;
@@ -281,7 +209,6 @@ const likeCount = ref('100');
   font-size: 12px;
   font-weight: 100;
   color: #707070;
-
 }
 
 .tags {
@@ -290,7 +217,7 @@ const likeCount = ref('100');
 }
 
 .tag {
-  color: #0077FF;
+  color: #0077ff;
 }
 
 .image-gallery {
@@ -392,6 +319,5 @@ const likeCount = ref('100');
   overflow-x: hidden;
   font-size: 14px;
   font-family: 'ali', sans-serif;
-
 }
 </style>

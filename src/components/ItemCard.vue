@@ -128,7 +128,7 @@ const props = defineProps({
   padding: 1.185vh 1.422vh 1.185vh;
   background-color: #ffffff;
   border-radius: 16px;
-  width: 46.4vw;
+  width: 44vw;
   min-height: 22.9vh;
   height: auto;
   display: flex;

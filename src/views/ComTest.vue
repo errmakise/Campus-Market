@@ -1,11 +1,12 @@
 <template>
   <div class="container">
-    <CategoryGrid :categories="categories" />
+    <ItemList view-height="70" />
   </div>
 </template>
 
 <script setup>
-import CategoryGrid from '@/components/CategoryGrid.vue'
+import ItemList from '@/components/itemList.vue';
+import CategoryGrid from '@/components/ItemsCategories.vue'
 
 const categories = [
   { icon: 'digital', label: '数码产品' },

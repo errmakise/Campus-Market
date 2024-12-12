@@ -1,85 +1,57 @@
 <template>
-  <div class="categories-container">
-    <div class="categories-row">
-      <div class="category-item" v-for="item in categories1" :key="item.label">
-        <img :src="item.icon" :alt="item.label" class="category-icon">
-        <span class="category-label">{{ item.label }}</span>
-      </div>
-    </div>
-    <div class="categories-row">
-      <div class="category-item" v-for="item in categories2" :key="item.label">
-        <img :src="item.icon" :alt="item.label" class="category-icon">
-        <span class="category-label">{{ item.label }}</span>
-      </div>
+  <div class="grid-container">
+    <div class="category-item" v-for="(category, index) in categories" :key="index">
+      <img :src="getIconPath(category.icon)" alt="icon" class="category-icon" />
+      <div class="category-name">{{ category.label }}</div>
     </div>
   </div>
 </template>
+
 <script setup>
-import digitalIcon from "@/assets/images/categories/digital.png";
-import studyIcon from "@/assets/images/categories/study.png";
-import foodIcon from "@/assets/images/categories/food.png";
-import fashionIcon from "@/assets/images/categories/fashion.png";
-import ticketsIcon from "@/assets/images/categories/tickets.png";
-import instrumentsIcon from "@/assets/images/categories/instruments.png";
-import accountsIcon from "@/assets/images/categories/accounts.png";
-import gamesIcon from "@/assets/images/categories/games.png";
-import sportsIcon from "@/assets/images/categories/sports.png";
-import othersIcon from "@/assets/images/categories/others.png";
-const categories1 = [
-  { icon: digitalIcon, label: "数码产品" },
-  { icon: studyIcon, label: "学习资料" },
-  { icon: gamesIcon, label: "游戏" },
+// 动态导入所有图标
+const iconPaths = import.meta.glob("@/assets/images/categories/*.png", { eager: true });
 
-  { icon: fashionIcon, label: "服饰美妆" },
-  { icon: ticketsIcon, label: "门票" },
-];
+// 根据图标名称获取路径
+const getIconPath = (iconName) => {
+  console.log(`/src/assets/images/categories/${iconName}.png`)
+  return `/src/assets/images/categories/${iconName}.png`;
+};
 
-const categories2 = [
-
-  { icon: accountsIcon, label: "账号会员" },
-  { icon: instrumentsIcon, label: "乐器" },
-  { icon: foodIcon, label: "餐饮代购" },
-  { icon: sportsIcon, label: "运动用品" },
-  { icon: othersIcon, label: "其他" },
-];
+// 接收传递的分类列表
+defineProps({
+  categories: {
+    type: Array,
+    required: true,
+  },
+});
 </script>
-<style scoped>
-.categories-container {
-  display: flex;
-  flex-direction: column;
-  background-color: #ffffff;
-  border-radius: 2.37vh;
-  width: 95vw;
-}
 
-.categories-row {
-  display: flex;
-  flex-direction: row;
-  /* 上，左右，下 */
+<style scoped>
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  width: 95vw;
+  background-color: #ffffff;
+  border-radius: 12px;
   padding: 0.474vh 0.6vh 1.185vh;
-  border-radius: 2.37vh;
 }
 
 .category-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 比例扩展、缩小、容器初始大小 */
-  flex: 1 1 8.399vh;
-  /* 上下、左右 */
-  padding: 0.474vh 0;
+  justify-content: center;
+  padding: 0.9vh 0;
 }
-
 
 .category-icon {
   height: 3.5vh;
+  margin-bottom: 8px;
 }
 
-.category-label {
-  font-size: medium;
+.category-name {
+  font-size: 14px;
+  color: #2b2b2b;
   font-family: ali;
-  color: #000000;
-  line-height: 1.44vh;
-  margin-top: 0.8vh;
 }
 </style>

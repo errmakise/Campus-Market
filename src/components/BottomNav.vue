@@ -35,13 +35,13 @@ const navIconsL = ref([
     label: '悬赏',
     se: taskSelected,
     unse: taskUnselected,
-    route: '/task'
+    route: '/tasks'
   },
   {
     label: '二手',
     se: itemSelected,
     unse: itemUnselected,
-    route: '/item'
+    route: '/items'
   },
 ]);
 
@@ -50,7 +50,7 @@ const navIconsR = ref([
     label: '消息',
     se: messageSelected,
     unse: messageUnselected,
-    route: '/message'
+    route: '/messages'
   },
   {
     label: '我的',

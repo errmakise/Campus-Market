@@ -23,7 +23,7 @@
 
     </div>
 
-    <BottomNav />
+    <BottomNav nowView="二手"/>
   </div>
 </template>
 

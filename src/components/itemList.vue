@@ -114,8 +114,8 @@ onMounted(() => {
   border-radius: 30px;
   border: none;
   align-items: center;
-  height: 4vh;
-  padding: 0vh 2vw 0vh 4vw;
+  height: 3.5vh;
+  padding: 0vh 1vw 0vh 3vw;
   background-color: #f2f2f2;
   font-size: 14px;
   font-weight: bold;

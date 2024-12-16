@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/Publish.vue'),
     },
     {
+      path: '/appeal',
+      name: 'appeal',
+      component: () => import('../views/Appeal.vue'),
+    },
+    {
       path: '/post',
       name: 'post',
       component: () => import('../views/PostDetail.vue'),
@@ -70,12 +75,12 @@ const router = createRouter({
     },
     {
       path: '/items/study',
-      name:'study',
+      name: 'study',
       component: () => import('../views/item-catogories/Study.vue'),
     },
     {
       path: '/items/tickets',
-      name:'tickets',
+      name: 'tickets',
       component: () => import('../views/item-catogories/Tickets.vue'),
     },
     {

@@ -1,6 +1,6 @@
 <template>
   <div class="bottom-bar">
-    <div v-if="props.barType == 'post'">
+    <div v-if="props.barType == 'post'" class="part-left">
       <div class="bottom-icon-button" @click="handleCommentClick">
         <img src="@/assets/images/comment.png" alt="icon" class="buttom-icon" />
         {{ commentCount }}
@@ -27,11 +27,7 @@
     </button>
 
     <button class="accept-button" @click="handleMainClick">
-      <img
-        v-if="props.barType == 'post'"
-        src="@/assets/images/accept-icon.png"
-        class="accept-icon"
-      />
+      <img v-if="props.barType == 'post'" src="@/assets/images/accept-icon.png" class="accept-icon" />
       <span>{{ label }}</span>
     </button>
   </div>
@@ -103,6 +99,10 @@ const handleMainClick = () => {
 </script>
 
 <style scoped>
+.part-left {
+  display: flex;
+}
+
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -160,6 +160,7 @@ const handleMainClick = () => {
   margin-left: 2vw;
   margin-right: 2vw;
 }
+
 .accept-icon {
   height: 3vh;
 }

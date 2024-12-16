@@ -21,7 +21,12 @@ const router = createRouter({
     {
       path: '/appeal',
       name: 'appeal',
-      component: () => import('../views/Appeal.vue'),
+      component: () => import('../views/OrderAppeal.vue'),
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: () => import('../views/UserReport.vue'),
     },
     {
       path: '/post',

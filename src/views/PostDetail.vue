@@ -6,9 +6,7 @@
       <div class="part">
         <div class="publisher">
           <div class="left-part">
-            <div class="image-container">
-              <img :src="publisherAvator" class="publisher-avator" />
-            </div>
+            <Avatar :src="publisherAvator" size="5vh" />
 
             <div class="publisher-info">
               <div class="publisher-name">张三</div>
@@ -25,22 +23,14 @@
         </div>
 
         <div class="divider"></div>
-        <PostContent
-          :deadline="deadline"
-          :reward="reward"
-          :address="address"
-          :content="content"
-          :images="images"
-          :tags="tags"
-        />
+        <PostContent :deadline="deadline" :reward="reward" :address="address" :content="content" :images="images"
+          :tags="tags" />
       </div>
 
       <div class="part">
         <span style="font-size: 16px; font-weight: 600">评论</span>
         <div class="publish-comment">
-          <div class="image-container">
-            <img :src="userAvator" class="publisher-avator" />
-          </div>
+          <Avatar :src="userAvator" size="5vh" />
           <input class="input-frame" type="text" placeholder="点击发布评论" v-model="comment" />
         </div>
 
@@ -57,11 +47,8 @@
       </div>
     </div>
 
-     <PostBottomBar :commentCount="commentCount"
-    :favouriteCount="favouriteCount"
-    :likeCount="likeCount"
-    barType="post"
-    />
+    <PostBottomBar :commentCount="commentCount" :favouriteCount="favouriteCount" :likeCount="likeCount"
+      barType="post" />
 
   </div>
 
@@ -285,21 +272,7 @@ const likeCount = ref('100')
   justify-content: space-between;
 }
 
-.image-container {
-  height: 5vh;
-  width: 5vh;
-  overflow: hidden;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
-.publisher-avator {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 .part {
   background-color: white;

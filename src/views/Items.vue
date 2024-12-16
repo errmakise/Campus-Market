@@ -8,9 +8,9 @@
     <!-- 瀑布流组件 -->
     <div class="items" @scroll="handleScroll" ref="masonryContainer">
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
-        <WaterfallGrid :items="items" :number-of-columns="2" :loading="loading">
-          <template #card="{ item }">
-            <ItemCard :itemId="item.itemId" :title="item.title" :price="item.price" :imageUrl="item.imageUrl" />
+        <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
+          <template #card="{ element }">
+            <ItemCard :itemId="element.id" :title="element.title" :price="element.price" :imageUrl="element.imageUrl" />
           </template>
         </WaterfallGrid>
       </van-pull-refresh>
@@ -23,7 +23,7 @@
 
     </div>
 
-    <BottomNav nowView="二手"/>
+    <BottomNav nowView="二手" />
   </div>
 </template>
 

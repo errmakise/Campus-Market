@@ -136,7 +136,7 @@ const props = defineProps({
 
 
   margin-bottom: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 1px 1px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 </style>

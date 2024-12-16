@@ -1,9 +1,9 @@
 <template>
   <div class="waterfall-grid">
     <div class="masonry">
-      <div class="masonry-column" v-for="(column, index) in columnItems" :key="index">
-        <div class="masonry-item" v-for="item in column" :key="item.itemId">
-          <slot name="card" :item="item"></slot>
+      <div class="masonry-column" v-for="(column, index) in columnElements" :key="index">
+        <div class="masonry-item" v-for="element in column" :key="element.id">
+          <slot name="card" :element="element"></slot>
         </div>
       </div>
     </div>
@@ -16,7 +16,7 @@ import { ref, watch } from "vue";
 
 // Props
 const props = defineProps({
-  items: {
+  elements: {
     type: Array,
     required: true,
     default: () => [],
@@ -32,23 +32,23 @@ const props = defineProps({
 });
 
 // 瀑布流分列数据
-const columnItems = ref(Array.from({ length: props.numberOfColumns }, () => []));
+const columnElements = ref(Array.from({ length: props.numberOfColumns }, () => []));
 
-// 根据 items 动态分配到列中
-const updateColumnItems = () => {
+// 根据 elements 动态分配到列中
+const updateColumnElements = () => {
   const columns = Array.from({ length: props.numberOfColumns }, () => []);
-  props.items.forEach((item, index) => {
+  props.elements.forEach((item, index) => {
     columns[index % props.numberOfColumns].push(item);
   });
-  columnItems.value = columns; // 一次性更新，减少多次赋值
+  columnElements.value = columns; // 一次性更新，减少多次赋值
 };
 
 
-// 监听 items 的变化，更新列
+// 监听 elements 的变化，更新列
 watch(
-  () => props.items,
-  (newItems, oldItems) => {
-    if (newItems !== oldItems) updateColumnItems(); // 检查是否有变化再更新
+  () => props.elements,
+  (newElements, oldElements) => {
+    if (newElements !== oldElements) updateColumnElements(); // 检查是否有变化再更新
   },
   { immediate: true }
 );
@@ -60,6 +60,7 @@ watch(
   width: 100%;
   overflow-x: hidden;
   justify-content: flex-first;
+  padding: 0vh 5.5vw;
 
 }
 

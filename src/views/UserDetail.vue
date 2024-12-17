@@ -31,11 +31,23 @@
     <!-- 瀑布流组件 -->
     <div class="content" @scroll="handleScroll" ref="masonryContainer">
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
-        <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
+        <WaterfallGrid  v-if="activeIndex === 0" :elements="items" :number-of-columns="2" :loading="loading">
           <template #card="{ element }">
             <ItemCard :itemId="element.id" :title="element.title" :price="element.price" :imageUrl="element.imageUrl" />
           </template>
         </WaterfallGrid>
+
+
+        <WaterfallGrid  v-else-if="activeIndex === 1" :elements="items" :number-of-columns="2" :loading="loading">
+          <template #card="{ element }">
+            <ItemCard :itemId="element.id" :title="element.title" :price="element.price" :imageUrl="element.imageUrl" />
+          </template>
+        </WaterfallGrid>
+
+        <div v-else>
+          <CommentCard />
+          <CommentCard />
+        </div>
       </van-pull-refresh>
 
       <!-- 状态提示 -->
@@ -81,6 +93,7 @@ const clickButton = () => {
 
 import { usePagination } from "@/utils/usePagination";
 import { getItems } from "@/api/api.js";
+import CommentCard from '@/components/CommentCard.vue';
 
 const masonryContainer = ref(null);
 

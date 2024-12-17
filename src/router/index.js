@@ -54,6 +54,11 @@ const router = createRouter({
       component: () => import('../views/Items.vue'),
     },
     {
+      path: '/publishedTasks',
+      name: 'publishedTasks',
+      component: () => import('../views/PublishedTasks.vue'),
+    },
+    {
       path: '/items/digital',
       name: 'digital',
       component: () => import('../views/item-catogories/Digital.vue'),

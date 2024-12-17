@@ -34,6 +34,11 @@ const router = createRouter({
       component: () => import('../views/UserDetail.vue'),
     },
     {
+      path: '/interaction',
+      name: 'interaction',
+      component: () => import('../views/Interaction.vue'),
+    },
+    {
       path: '/post',
       name: 'post',
       component: () => import('../views/PostDetail.vue'),

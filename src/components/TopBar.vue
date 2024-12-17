@@ -1,9 +1,10 @@
 <template>
 
   <div class="top-container">
-    <img src="@/assets/images/left.png" class="left" />
+    <img v-if="!isRound" src="@/assets/images/left.png" class="left" />
+    <img v-else class="left-round" src="@/assets/images/left-round.png" alt="left-round" />
 
-    <span class="title">{{ title }}</span>
+       <span class="title">{{ title }}</span>
     <img v-if="props.isEllipsis" src="@/assets/images/Ellipsis.png" class="ellipsis" />
   </div>
 
@@ -17,15 +18,22 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  isRound: {
+    type: Boolean,
+    default: false
+  }
 })
 </script>
 
 <style scoped>
+.left-round{
+  height: 50%;
+  margin-right: 3vw;
+}
 .title {
   font-family: 'ali', sans-serif;
   font-size: 22px;
   font-weight: 600;
-  margin-left: 5vw;
   letter-spacing: 2px;
 }
 
@@ -41,6 +49,7 @@ const props = defineProps({
 
 .left {
   height: 25%;
+  margin-right: 5vw;
 }
 
 .ellipsis {

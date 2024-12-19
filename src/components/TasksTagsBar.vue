@@ -49,14 +49,14 @@ const changeNav = (item, index) => {
   align-items: center;
   justify-content: space-between;
   width: 93vw;
-  height: 3.5vh;
+  height: 3.8vh;
   background-color: white;
   padding: 0px 6px;
   border-radius: 20px;
 }
 
 .scrollBarItem {
-  padding: 4px 10px;
+  padding: 0px 10px;
   color: #4F4D4D;
   font-family: 'ali', sans-serif;
   font-size: 14px;

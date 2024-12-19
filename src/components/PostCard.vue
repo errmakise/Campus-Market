@@ -5,10 +5,20 @@
         <img :src="props.imageUrl" alt="Post Image" class="post-image" />
       </div>
       <span class="post-title">{{ props.postTitle }}</span>
-      <span class="post-money">{{ props.money }}</span>
+      <span class="post-money">￥{{ props.money }}</span>
     </div>
-    <div class="comment">
-      <span class="comment-text">{{ props.comment }}</span>
+
+    <div class="button-bar">
+      <button class="common">
+        <span>删除</span>
+      </button>
+
+      <button class="common">
+        <span>编辑</span>
+      </button>
+      <button class="common" style="color: white;background-color:#613EEA ;">
+        <span>修改价格</span>
+      </button>
     </div>
 
 
@@ -42,15 +52,27 @@ const props = defineProps({
 </script>
 
 <style scoped>
+.button-bar {
+  display: flex;
+  gap: 3vw;
+  width: 100%;
+  justify-content: end;
+}
+
+.common {
+  border: none;
+  border-radius: 20px;
+  height: 30px;
+  width: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .post-money {
   margin-left: auto;
 }
 
-.comment {
-  width: 100%;
-  margin-top: 2vh;
-  margin-bottom: 2vh;
-}
 
 .post-title {}
 
@@ -58,13 +80,13 @@ const props = defineProps({
   display: flex;
   justify-content: left;
   width: 100%;
-  border-bottom: 1px solid rgb(236, 236, 236);
-  padding-bottom: 2vh;
+  margin-bottom: 2vh;
+  align-items: center;
 }
 
 .image-container {
-  width: 6vh;
-  height: 6vh;
+  width: 7vh;
+  height: 7vh;
   overflow: hidden;
   border-radius: 8px;
   margin-right: 4vw;
@@ -86,5 +108,7 @@ const props = defineProps({
   font-family: 'ali', sans-serif;
   font-size: 14px;
   padding: 1.5vh 5vw;
+  margin-bottom: 2vh;
+
 }
 </style>

@@ -30,6 +30,7 @@ const activeTab = ref(2); // 默认选中“求助”
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "ali", sans-serif;
 }
 
 .tabs {

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <ItemList view-height="70" />
+    <TaskMapComponent />
   </div>
 </template>
 
@@ -31,5 +31,6 @@ const categories = [
   background-color: antiquewhite;
   height: 100%;
   align-items: center;
+  width: 100vw;
 }
 </style>

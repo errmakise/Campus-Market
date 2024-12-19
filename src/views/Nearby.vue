@@ -2,15 +2,17 @@
   <div class="container">
     <!-- 搜索框组件 -->
     <SearchBar />
-    <!-- 分类组件 -->
-    <ItemsCategories :categories="categories" />
 
-    <!-- 瀑布流组件 -->
+    <TaskMapComponent />
+
+
+    <!-- 商品瀑布流列表 -->
     <div class="items" @scroll="handleScroll" ref="masonryContainer">
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
         <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
           <template #card="{ element }">
-            <ItemCard :itemId="element.id" :title="element.title" :price="element.price" :imageUrl="element.imageUrl" />
+            <TaskCard :taskId="element.id" :title="element.title" :reward="element.price"
+              :imageUrl="element.imageUrl" />
           </template>
         </WaterfallGrid>
       </van-pull-refresh>
@@ -22,8 +24,7 @@
       </div>
 
     </div>
-
-    <BottomNav nowView="二手" />
+    <BottomNav />
   </div>
 </template>
 
@@ -31,21 +32,9 @@
 import { ref, onMounted } from "vue";
 import { usePagination } from "@/utils/usePagination";
 import { getItems } from "@/api/api.js";
+import TaskCard from "@/components/TaskCard.vue";
 
 const masonryContainer = ref(null);
-// 分类数据
-const categories = [
-  { icon: "digital", label: "数码产品" },
-  { icon: "study", label: "学习资料" },
-  { icon: "game", label: "游戏" },
-  { icon: "fashion", label: "服饰美妆" },
-  { icon: "ticket", label: "门票" },
-  { icon: "account", label: "账号会员" },
-  { icon: "instrument", label: "乐器" },
-  { icon: "food", label: "餐饮代购" },
-  { icon: "sport", label: "运动用品" },
-  { icon: "others", label: "其他" },
-];
 
 // 使用封装的分页逻辑
 const { items, loading, hasMore, fetchItems, refreshItems, currentPage } = usePagination(getItems);
@@ -87,23 +76,11 @@ onMounted(() => {
   color: #888;
 }
 
-.container {
-  background-color: #fafafa;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding-top: 3vh;
-  align-items: center;
-  gap: 1.777vh;
-  overflow-x: hidden;
-  font-family: "ali", sans-serif;
-}
-
 .items {
   width: 100%;
   overflow-y: auto;
-  max-height: 68vh;
+  max-height: 60vh;
+  margin-top: 1vh;
 }
 
 .loading-indicator {
@@ -115,5 +92,18 @@ onMounted(() => {
   text-align: center;
   padding: 10px;
   color: #888;
+}
+
+.container {
+  background-color: #fafafa;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 3vh;
+  align-items: center;
+  gap: 1.777vh;
+  overflow-x: hidden;
+  font-family: "ali", sans-serif;
 }
 </style>

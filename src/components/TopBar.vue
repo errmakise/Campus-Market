@@ -4,7 +4,7 @@
     <img v-if="!isRound" src="@/assets/images/left.png" class="left" />
     <img v-else class="left-round" src="@/assets/images/left-round.png" alt="left-round" />
 
-       <span class="title">{{ title }}</span>
+    <span class="title">{{ title }}</span>
     <img v-if="props.isEllipsis" src="@/assets/images/Ellipsis.png" class="ellipsis" />
   </div>
 
@@ -26,10 +26,11 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.left-round{
-  height: 50%;
+.left-round {
+  height: 5vh;
   margin-right: 3vw;
 }
+
 .title {
   font-family: 'ali', sans-serif;
   font-size: 22px;
@@ -40,10 +41,10 @@ const props = defineProps({
 .top-container {
   display: flex;
   flex-direction: row;
-  height: 10vh;
+  height: 12vh;
   align-items: center;
 
-  padding: 0vh 5vw;
+  padding: 0vh 4vw;
   width: 100vw;
 }
 

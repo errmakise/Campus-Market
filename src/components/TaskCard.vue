@@ -9,7 +9,10 @@
     <img :src="props.imageUrl" alt="Item Image" class="card-image">
 
     <div class="card-title">{{ props.title }}</div>
-    <span class="card-letter" v-if="location != null">{{ props.location }} {{ distance }}</span>
+    <div class="card-letter" v-if="props.location != ''">
+      {{ props.location }}
+      {{ distance }}
+    </div>
     <span class="card-letter">截止时间：{{ props.deadLine }}</span>
     <div class="card-letter">{{ formattedTime }}</div>
     <div class="card-bottom">
@@ -29,7 +32,7 @@ import { formatTime } from '@/utils/timeFormatter';
 const formattedTime = computed(() => formatTime(props.createdAt));
 
 const props = defineProps({
-  itemId: {
+  taskId: {
     type: Number,
     required: true,
   },
@@ -39,8 +42,8 @@ const props = defineProps({
   // 默认值为数组时，应该使用函数返回一个新数组，否则多个实例会共享同一个数组。
   tags: { type: Array, default: () => ['无', '无', '无'] },
   reward: { type: Number, default: 333 },
-  deadLine: { type: Number, default: 0 },
-  location: { type: String, default: '无' },
+  deadLine: { type: String, default: '2023-07-11T11:50:00.000Z' },
+  location: { type: String, default: '' },
   distance: { type: Number, default: 0 },
 });
 </script>
@@ -74,6 +77,7 @@ const props = defineProps({
   font-weight: 300;
   color: rgba(26, 26, 26, 1);
   margin-top: 5px;
+  word-break: break-all;
 }
 
 

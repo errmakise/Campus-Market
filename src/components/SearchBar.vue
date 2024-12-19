@@ -14,11 +14,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <div v-if="props.barType === 'home'"
-   class="home"
-   >
+  <div v-if="props.barType === 'home'" class="home">
     <img class="image" src="@/assets/images/search.png" />
-    <input type="text" class="search-input" placeholder="请输入搜索内容" v-model="searchQuery" />
+    <input type="text" class="search-input" v-model="searchQuery" />
     <div class="flex-row items-center">
       <div class="divider"></div>
       <span class="ml-8 text">搜索</span>
@@ -36,7 +34,7 @@ const props = defineProps({
 </template>
 
 <style>
-.home{
+.home {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -46,6 +44,7 @@ const props = defineProps({
   background-color: #ffffff;
   border-radius: 5.924vh;
 }
+
 .top {
   display: flex;
   width: 100%;

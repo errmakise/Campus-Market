@@ -34,6 +34,11 @@ const router = createRouter({
       component: () => import('../views/UserDetail.vue'),
     },
     {
+      path: '/nearby',
+      name: 'nearby',
+      component: () => import('../views/Nearby.vue'),
+    },
+    {
       path: '/interaction',
       name: 'interaction',
       component: () => import('../views/Interaction.vue'),

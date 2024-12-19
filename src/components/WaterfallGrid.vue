@@ -60,24 +60,24 @@ watch(
   width: 100%;
   overflow-x: hidden;
   justify-content: flex-first;
-  padding: 0vh 5.5vw;
-
 }
 
 .masonry {
   display: flex;
-  gap: 8px;
+  padding: 0vh 1vw;
 }
 
 .masonry-column {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .masonry-item {
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loading-indicator {

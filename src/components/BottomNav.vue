@@ -5,15 +5,28 @@
       class="icons">
       <img :src="activeTab === icon.label ? icon.se : icon.unse" class="icon">
     </RouterLink>
-    <img src="@/assets/images/post.png" class="post">
+    <img src="@/assets/images/post.png" class="post" @click="handlePublish">
     <RouterLink v-for="(icon, index) in navIconsR" :key="index" :to="icon.route" @click="activeTab = icon.label"
       class="icons">
       <img :src="activeTab === icon.label ? icon.se : icon.unse" class="icon">
     </RouterLink>
   </div>
+  <!-- 圆角弹窗（底部） -->
+  <van-popup v-model:show="showBottom" round position="bottom" class="popup">
+    <div class="popup-button" @click="handlePublishTask">
+      <img src="@/assets/images/publish-task.png" class="popup-img">
+      <span>发悬赏</span>
+    </div>
+    <div class="popup-button" @click="handlePublishItem">
+      <img src="@/assets/images/publish-item.png" class="popup-img">
+      <span>发二手</span>
+    </div>
+
+  </van-popup>
 </template>
 
 <script setup>
+
 import taskSelected from '@/assets/images/task-selected.png';
 import taskUnselected from '@/assets/images/task-unselected.png';
 import itemSelected from '@/assets/images/item-selected.png';
@@ -22,6 +35,30 @@ import messageSelected from '@/assets/images/message-selected.png';
 import messageUnselected from '@/assets/images/message-unselected.png';
 import userSelected from '@/assets/images/user-selected.png';
 import userUnselected from '@/assets/images/user-unselected.png';
+import { useRouter } from 'vue-router';
+
+const handlePublishTask = () => {
+  console.log('点击发布任务按钮');
+  router.push({ name: 'publish', params: { type: 'task' } });
+  showBottom.value = false;
+}
+
+const handlePublishItem = () => {
+  console.log('点击发布二手按钮');
+  router.push({ name: 'publish', params: { type: 'item' } });
+  showBottom.value = false;
+}
+
+
+const router = useRouter();
+
+const showBottom = ref(false);
+
+const handlePublish = () => {
+  console.log('点击上传按钮');
+  showBottom.value = true;
+
+}
 
 const props = defineProps({
   nowView: {
@@ -62,6 +99,31 @@ const navIconsR = ref([
 </script>
 
 <style>
+.popup-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 600;
+  color: rgb(68, 68, 68);
+}
+
+.popup-img {
+  height: 10vh;
+  margin-bottom: 1vh;
+}
+
+.popup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0% 15vw;
+
+  height: 25vh;
+
+}
+
+.popup-button {}
+
 .icons {
   height: 100%;
   display: flex;

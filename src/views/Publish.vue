@@ -1,77 +1,84 @@
 <template>
   <div class="container">
     <div class="top">
-      <img src="@/assets/images/x.png" alt="x" class="x" />
+      <img src="@/assets/images/x.png" alt="x" class="x" @click="handleBack" />
       <button class="post-button" @click="handlePost">
         <span>发布</span>
       </button>
     </div>
 
+    <div style="margin-top: 8vh;height: 92vh;overflow-y: auto;">
 
-    <div class="post-content" style="margin-top: 7vh;">
-      <textarea v-model="postContent" placeholder="输入帖子内容" class="post-textarea" maxlength="200"></textarea>
-      <div class="content-line2">
-        <van-uploader preview-size="18.5vw" class="uploader" v-model="fileList" multiple :max-count="3" />
-        <p class="textPrompt">{{ postContent.length }}/200</p>
-      </div>
-    </div>
-
-    <div class="post-content">
-      <span class="title">标题</span>
-      <div class="post-title">
-        <div class="title-line1">
-          <textarea v-model="postTitle" placeholder="输入标题" class="title-content" maxlength="20"
-            clearable="true"></textarea>
-          <img src="@/assets/images/x.png" alt="x" class="x" />
-        </div>
-        <p class="textPrompt">{{ postTitle.length }}/20</p>
-      </div>
-
-      <div class="title">悬赏类型</div>
-      <div class="categories">
-        <div class="item" v-for="(item, index) in categories" :key="index" @click="changeCate(item, index)"
-          :class="index === activeIndex ? 'active' : null">
-          <span class="category-name">{{ item.name }}</span>
+      <div class="post-content">
+        <textarea v-model="postContent" placeholder="输入帖子内容" class="post-textarea" maxlength="200"></textarea>
+        <div class="content-line2">
+          <van-uploader preview-size="18.5vw" class="uploader" v-model="fileList" multiple :max-count="3" />
+          <p class="textPrompt">{{ postContent.length }}/200</p>
         </div>
       </div>
 
-      <div class="reward">
-        <div class="reward-part1">
-          <div class="title">酬金</div>
-          <div class="item" @click="toBeDiscussed" :class="isDiscussed ? 'active' : null">
-            <span>待议</span>
+      <div class="post-content">
+        <span class="title">标题</span>
+        <div class="post-title">
+          <div class="title-line1">
+            <textarea v-model="postTitle" placeholder="输入标题" class="title-content" maxlength="20"
+              clearable="true"></textarea>
+            <img src="@/assets/images/x.png" alt="x" class="x" />
+          </div>
+          <p class="textPrompt">{{ postTitle.length }}/20</p>
+        </div>
+
+        <div class="title">悬赏类型</div>
+        <div class="categories">
+          <div class="item" v-for="(item, index) in categories" :key="index" @click="changeCate(item, index)"
+            :class="index === activeIndex ? 'active' : null">
+            <span class="category-name">{{ item.name }}</span>
           </div>
         </div>
 
-        <div class="reward-amount">
-          ￥
-          <InputFrame v-model="reward" maxWidth="150" type="number" class="amount" :disabled="isDiscussed" />
+        <div class="title">标签</div>
+        <TagsBar class="tagsBar" :options="tagOptions" @update:selectedTags="handleSelectedTags" />
+
+        <div class="reward">
+          <div class="reward-part1">
+            <div class="title">酬金</div>
+            <div class="item" @click="toBeDiscussed" :class="isDiscussed ? 'active' : null">
+              <span>待议</span>
+            </div>
+          </div>
+
+          <div class="reward-amount">
+            ￥
+            <InputFrame v-model="reward" maxWidth="150" type="number" class="amount" :disabled="isDiscussed" />
+          </div>
+        </div>
+
+
+
+      </div>
+
+      <div class="post-content" style="margin-bottom: 10vh;">
+        <div class="post-phone">
+          <div class="title">联系方式</div>
+          <InputFrame v-model="phone" maxLength="11" type="number" placeholder="请输入手机号" />
+        </div>
+
+        <div class="post-address">
+          <div class="title">任务地点</div>
+          <div class="address"> {{ address }}</div>
+
+          <img src="@/assets/images/right.png" alt="right" class="right">
         </div>
       </div>
-
-
-
     </div>
-    <div class="post-content" style="margin-bottom: 10vh;">
-      <div class="post-phone">
-        <div class="title">联系方式</div>
-        <InputFrame v-model="phone" maxLength="11" type="number" placeholder="请输入手机号" />
-      </div>
 
-      <div class="post-address">
-        <div class="title">任务地点</div>
-        <div class="address"> {{ address }}</div>
-
-        <img src="@/assets/images/right.png" alt="right" class="right">
-      </div>
-    </div>
 
   </div>
 
 </template>
 
 <script setup>
-import InputFrame from '@/components/InputFrame.vue';
+import { useRouter } from 'vue-router';
 const address = ref('无')
 const postContent = ref('')
 const postTitle = ref('')
@@ -79,6 +86,13 @@ const activeIndex = ref(0)
 const isDiscussed = ref(false)
 const reward = ref('0')
 const phone = ref('')
+
+const router = useRouter();
+const route = useRoute();
+const handleBack = () => {
+  console.log('点击退出');
+  router.back();
+}
 
 const toBeDiscussed = () => {
   isDiscussed.value = !isDiscussed.value
@@ -90,23 +104,17 @@ const changeCate = (item, index) => {
 }
 const categories = ref([
   {
-    name: '前端',
+    name: '求助',
   },
   {
-    name: '前端',
+    name: '跑腿',
   },
   {
-    name: '后端',
+    name: '求购',
   },
   {
-    name: '设计',
-  },
-  {
-    name: '产品',
-  },
-  {
-    name: '运营',
-  },
+    name: '寻物',
+  }
 ])
 
 // 响应式的文件列表
@@ -120,9 +128,40 @@ const fileList = ref([
 const handleAfterRead = (file) => {
   fileList.value.push(file)
 }
+
+const selectedTags = ref([]); // 用于存储选中的标签 ID
+
+// 监听子组件的事件，更新选中的标签 ID
+const handleSelectedTags = (tags) => {
+  selectedTags.value = tags;
+  console.log('选中的标签 ID:', selectedTags.value);
+};
+
+// 模拟标签选项
+const tagOptions = [
+  { id: 1, name: '关注' },
+  { id: 2, name: '推荐' },
+  { id: 3, name: '本地' },
+  { id: 4, name: '新闻' },
+  { id: 5, name: '汽车' },
+  { id: 6, name: '直播' },
+  { id: 7, name: '游戏' },
+  { id: 8, name: '小说' },
+  { id: 9, name: '美女' },
+];
+
+
+onMounted(() => {
+  console.log(route.params.type);
+})
 </script>
 
 <style scoped>
+.tagsBar {
+  margin-top: 1vh;
+  margin-bottom: 4vh;
+}
+
 .right {
   height: 20px;
 }
@@ -181,6 +220,7 @@ const handleAfterRead = (file) => {
   align-items: center;
   padding: 4px 12px;
   background-color: #ededed;
+  color: #4F4D4D;
 }
 
 .active {
@@ -193,6 +233,7 @@ const handleAfterRead = (file) => {
   flex-wrap: wrap;
   gap: 8px;
   /* 上右下左 */
+  color: #4F4D4D;
   padding: 2vh 2vw 4vh 2vw;
 }
 
@@ -283,12 +324,11 @@ const handleAfterRead = (file) => {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding-top: 1vh;
-  height: 5vh;
-  padding-left: 3vw;
-  padding-right: 3vw;
+  height: 7vh;
+  padding: 2vh 3vw;
   align-items: center;
   background-color: #fafafa;
+
 }
 
 .x {

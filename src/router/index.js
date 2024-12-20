@@ -14,7 +14,7 @@ const router = createRouter({
       component: () => import('../views/Tasks.vue'),
     },
     {
-      path: '/publish',
+      path: '/publish/:type',
       name: 'publish',
       component: () => import('../views/Publish.vue'),
     },
@@ -37,6 +37,11 @@ const router = createRouter({
       path: '/nearby',
       name: 'nearby',
       component: () => import('../views/Nearby.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/Login.vue'),
     },
     {
       path: '/interaction',

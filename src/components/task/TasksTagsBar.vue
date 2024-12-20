@@ -1,15 +1,15 @@
 <template>
-  <div>
-    <div class="container">
-      <scrollBar direction="x" :activeIndex="activeIndex">
-        <div class="scrollBarItem" v-for="(item, index) in options" :key="index" @click="changeNav(item, index)"
-          :class="index === activeIndex ? 'active' : null">
-          <div>#{{ item.name }}</div>
-        </div>
-      </scrollBar>
-      <img src="@/assets/images/extendTags.png" class="image">
-    </div>
+
+  <div class="tags-container">
+    <scrollBar direction="x" :activeIndex="activeIndex">
+      <div class="scrollBarItem" v-for="(item, index) in options" :key="index" @click="changeNav(item, index)"
+        :class="index === activeIndex ? 'active' : null">
+        <div>#{{ item.name }}</div>
+      </div>
+    </scrollBar>
+    <img src="@/assets/images/extendTags.png" class="image">
   </div>
+
 
 
 </template>
@@ -33,7 +33,7 @@ const options = ref([
   { id: 9, name: '美女' }
 ]);
 
-// 定义切换导航的方法
+
 const changeNav = (item, index) => {
   activeIndex.value = index; // 更新 activeIndex
 };
@@ -43,12 +43,12 @@ const changeNav = (item, index) => {
   height: 80%;
 }
 
-.container {
+.tags-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 93vw;
+  width: 100%;
   height: 3.8vh;
   background-color: white;
   padding: 0px 6px;

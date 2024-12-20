@@ -37,7 +37,7 @@
 import { ref, onMounted } from "vue";
 import { usePagination } from "@/utils/usePagination";
 import WaterfallGrid from "@/components/WaterfallGrid.vue";
-import ItemCard from "@/components/ItemCard.vue";
+import ItemCard from "@/components/item/ItemCard.vue";
 import { getItems } from "@/api/api.js";
 
 

@@ -32,7 +32,7 @@
 import { ref, onMounted } from "vue";
 import { usePagination } from "@/utils/usePagination";
 import { getItems } from "@/api/api.js";
-import TaskCard from "@/components/TaskCard.vue";
+import TaskCard from "@/components/tasks/TaskCard.vue";
 
 const masonryContainer = ref(null);
 

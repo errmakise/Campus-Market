@@ -13,11 +13,6 @@
 </template>
 
 <script setup>
-import ItemList from '@/components/itemList.vue';
-import ItemsCategories from '@/components/ItemsCategories.vue';
-import SearchBar from '@/components/SearchBar.vue';
-import TagsGrid from '@/components/tagsGrid.vue';
-import TopBar from '@/components/TopBar.vue'
 
 
 const categories = [

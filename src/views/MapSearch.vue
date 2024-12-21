@@ -1,21 +1,22 @@
 <template>
   <div class="container">
-    <SearchBox />
+    <MapInPublish class="map" />
 
   </div>
 </template>
 
 <script setup>
-import SearchBox from '@/components/SearchBox.vue';
-
 
 </script>
 
 <style scoped>
+.map {
+  height: 100vh;
+}
+
 .container {
   display: flex;
   flex-direction: column;
-  background-color: antiquewhite;
   height: 100%;
   align-items: center;
   width: 100vw;

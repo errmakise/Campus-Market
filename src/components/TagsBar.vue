@@ -6,11 +6,29 @@
         <span>{{ item.name }}</span>
       </button>
     </scrollBar>
-    <img src="@/assets/images/extendTags.png" class="image">
+
+    <!-- 点击图片弹出 Popup -->
+    <img src="@/assets/images/extendTags.png" class="image" @click="showPopup = true" />
+
+    <!-- 弹窗 -->
+    <van-popup v-model:show="showPopup" round>
+      <div class="popup-content">
+        <button class="popup-button" v-for="(item, index) in options" :key="index" @click="toggleNav(item, index)"
+          :class="activeIndex.includes(index) ? 'active' : null">
+          <span>{{ item.name }}</span>
+        </button>
+      </div>
+    </van-popup>
   </div>
 </template>
+
 <script setup>
-import { ref, watch } from 'vue';
+
+import { ref } from 'vue';
+import { Popup } from 'vant';
+
+// 控制弹窗显示/隐藏
+const showPopup = ref(false);
 
 // 使用数组记录当前激活的索引（支持多选）
 const activeIndex = ref([]);
@@ -51,10 +69,22 @@ const toggleNav = (item, index) => {
 };
 </script>
 
-
 <style scoped>
+.popup-button {
+  padding: 5px 15px;
+  color: #4F4D4D;
+  background-color: #EDEDED;
+
+  display: flex;
+
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
 .image {
   height: 30px;
+  cursor: pointer;
 }
 
 .tags-container {
@@ -77,13 +107,21 @@ const toggleNav = (item, index) => {
   border: none;
   border-radius: 20px;
   margin-right: 2vw;
-
-
+  cursor: pointer;
 }
 
 .active {
   color: white;
   background-color: #4794FF;
   font-weight: 600;
+}
+
+.popup-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 4vh 8vw;
 }
 </style>

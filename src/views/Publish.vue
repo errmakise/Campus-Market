@@ -63,12 +63,32 @@
           <InputFrame v-model="phone" maxLength="11" type="number" placeholder="请输入手机号" />
         </div>
 
-        <div class="post-address">
+        <div class="post-address" @click="showAddressPopup = true">
           <div class="title">任务地点</div>
           <div class="address"> {{ address }}</div>
 
           <img src="@/assets/images/right.png" alt="right" class="right">
         </div>
+
+        <!-- 弹出选择地址的弹窗 -->
+        <van-popup v-model:show="showAddressPopup" position="bottom" round>
+          <div class="popup-title">
+            选择任务地点
+            <div class="map-search" @click="openMapSearch">地图
+              <img src="@/assets/images/right.png" alt="right" class="right">
+            </div>
+
+          </div>
+          <div class="address-popup">
+            <!-- 预设地址列表 -->
+            <div v-for="(item, index) in presetAddresses" :key="index" class="address-item"
+              @click="selectPresetAddress(item)">
+              {{ item }}
+
+            </div>
+          </div>
+        </van-popup>
+
       </div>
     </div>
 
@@ -89,6 +109,40 @@ const phone = ref('')
 
 const router = useRouter();
 const route = useRoute();
+
+const showAddressPopup = ref(false);
+
+
+// 预设地址列表
+const presetAddresses = ref([
+  '北京市 朝阳区 国贸北京市 朝阳区 国贸北京市 朝阳区 国贸,北京市 朝阳区 国贸',
+  '北京市 海淀区 中关村',
+  '上海市 黄浦区 人民广场',
+  '广州市 天河区 珠江新城',
+  '北京市 朝阳区 国贸',
+  '北京市 海淀区 中关村',
+  '上海市 黄浦区 人民广场',
+  '广州市 天河区 珠江新城',
+  '北京市 朝阳区 国贸',
+  '北京市 海淀区 中关村',
+  '上海市 黄浦区 人民广场',
+  '广州市 天河区 珠江新城',
+]);
+
+// 选择预设地址
+const selectPresetAddress = (selectedAddress) => {
+  address.value = selectedAddress; // 更新任务地点
+  showAddressPopup.value = false; // 关闭弹窗
+  console.log('选中的地址:', selectedAddress);
+};
+
+// 打开地图搜索页面
+const openMapSearch = () => {
+  showAddressPopup.value = false; // 关闭弹窗
+  console.log('打开地图搜索页面');
+  router.push('/mapSearch'); // 跳转到地图搜索页面
+};
+
 const handleBack = () => {
   console.log('点击退出');
   router.back();
@@ -96,7 +150,14 @@ const handleBack = () => {
 
 const toBeDiscussed = () => {
   isDiscussed.value = !isDiscussed.value
-  console.log('待议')
+  if (isDiscussed.value) {
+    reward.value = '0';
+    console.log('待议')
+  }
+  else {
+    console.log('取消待议')
+  }
+
 }
 
 const changeCate = (item, index) => {
@@ -157,6 +218,32 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.map-search {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.address-item {
+  font-size: 16px;
+  border-bottom: 1px solid #bbbbbb;
+  padding: 1.5vh 0vw;
+}
+
+.popup-title {
+  font-size: 22px;
+  font-weight: 600;
+  padding: 2vh 6vw 2vh 6vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+.address-popup {
+  height: 45vh;
+  padding: 1vh 6vw;
+  overflow-y: auto;
+}
+
 .tagsBar {
   margin-top: 1vh;
   margin-bottom: 4vh;

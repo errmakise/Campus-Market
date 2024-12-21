@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/Publish.vue'),
     },
     {
+      path: '/mapSearch',
+      name: 'mapSearch',
+      component: () => import('../views/MapSearch.vue'),
+    },
+    {
       path: '/appeal',
       name: 'appeal',
       component: () => import('../views/OrderAppeal.vue'),

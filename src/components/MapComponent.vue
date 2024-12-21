@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="mapContainer" style="width: 100vw; height: 500px;"></div>
+    <div id="mapContainer"></div>
 
     <van-overlay :show="showPopup">
       <div class="popup">
@@ -29,7 +29,19 @@ const map = ref(null); // 地图实例
 const tempMarker = ref(null); // 当前待上传点位
 const showPopup = ref(false); // 是否显示弹窗
 const pointData = reactive({ name: '', sync: false }); // 点位信息
-const markers = ref([]); // 已上传点位列表
+
+
+const props = defineProps({
+  existedMarkers: {// 已上传点位列表
+    type: Array,
+    default: () => [
+      { name: '点位1', position: [116.404, 39.915] },
+      { name: '点位2', position: [116.397, 39.921] },
+      // 其他点位...
+    ],
+  }
+});
+const markers = ref(props.existedMarkers); // 已上传点位列表
 
 onMounted(() => {
   if (typeof AMap === 'undefined') {
@@ -70,6 +82,7 @@ onMounted(() => {
 
   // 地图点击事件
   map.value.on('click', (e) => {
+
     const { lng, lat } = e.lnglat;
 
     // 如果已有待上传点位，先移除
@@ -157,8 +170,8 @@ onUnmounted(() => {
 <style scoped>
 /* 地图容器样式 */
 #mapContainer {
-  width: 100%;
-  height: 500px;
+  width: 100vw;
+  height: 100vh;
   border: 1px solid #ccc;
 }
 

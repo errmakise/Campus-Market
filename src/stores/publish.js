@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import axios from 'axios' // 确保已安装 axios
+import { fetchTagOptions } from '../api/api.js'
 import ins from '../api/axiosInstance.js'
 export const usePublishStore = defineStore('publish', () => {
   const formData = reactive({
@@ -19,19 +20,17 @@ export const usePublishStore = defineStore('publish', () => {
   })
 
   // 异步动作：根据类别获取标签选项
-  const fetchTagOptions = async (categoryId) => {
+  const fetchAndSetTagOptions = async (categoryId) => {
     try {
-      console.log('开始获取标签选项', categoryId)
-      const response = await ins.get('/api/post/tag', {
-        params: { type: categoryId },
-      })
-      formData.tagOptions = response.data.data
-      console.log('获取标签选项成功:', response.data.data)
+      const tags = await fetchTagOptions(categoryId)
+      formData.tagOptions = tags
+      console.log('更新后的标签选项:', tags)
     } catch (error) {
-      console.error('获取标签选项失败:', error)
       formData.tagOptions = [] // 清空标签选项或设置默认值
+      console.error('获取标签选项失败:', error)
+      // 可选：添加错误处理逻辑，例如显示通知
     }
   }
 
-  return { formData, fetchTagOptions }
+  return { formData, fetchAndSetTagOptions }
 })

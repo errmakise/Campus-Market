@@ -159,7 +159,7 @@ const changeCate = async (item, index) => {
   publishStore.formData.activeIndex = index; // 更新 activeIndex
   publishStore.formData.selectedTags = [];
   try {
-    await publishStore.fetchTagOptions(item.id); // 根据类别名称获取标签
+    await publishStore.fetchAndSetTagOptions(item.id); // 根据类别名称获取标签
   } catch (error) {
     console.error('获取标签选项失败:', error);
   }
@@ -227,7 +227,7 @@ onMounted(async () => {
   const currentCategory = categories.value[publishStore.formData.activeIndex]?.id;
   if (currentCategory) {
     try {
-      await publishStore.fetchTagOptions(currentCategory);
+      await publishStore.fetchAndSetTagOptions(currentCategory);
     } catch (error) {
       console.error('初始化获取标签选项失败:', error);
     }

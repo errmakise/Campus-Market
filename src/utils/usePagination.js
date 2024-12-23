@@ -1,3 +1,5 @@
+// src/utils/usePagination.js
+
 import { ref } from 'vue'
 
 export const usePagination = (apiFunction, pageSize = 10) => {
@@ -6,16 +8,16 @@ export const usePagination = (apiFunction, pageSize = 10) => {
   const loading = ref(false) // 加载状态
   const hasMore = ref(true) // 是否有更多数据
   const loadedPages = new Set() // 已加载的页码
-  const timestamp = ref(Date.now()) // 用于记录分页的时间点
 
   // 请求数据
-  const fetchItems = async () => {
+  const fetchItems = async (...args) => {
     if (loading.value || !hasMore.value || loadedPages.has(currentPage.value)) return
     loading.value = true
     loadedPages.add(currentPage.value)
 
     try {
-      const response = await apiFunction(timestamp.value, currentPage.value, pageSize)
+      // 调用API函数，传入当前时间戳、页码、每页大小及其他参数
+      const response = await apiFunction(currentPage.value, pageSize, ...args)
       if (response && response.length) {
         items.value = [...items.value, ...response]
       } else {
@@ -28,14 +30,18 @@ export const usePagination = (apiFunction, pageSize = 10) => {
     }
   }
 
-  // 刷新数据
-  const refreshItems = async () => {
+  // 刷新数据（重置分页并重新加载第一页）
+  const refreshItems = async (...args) => {
     items.value = []
     currentPage.value = 1
     loadedPages.clear()
     hasMore.value = true
-    timestamp.value = Date.now() // 重新记录时间戳
-    await fetchItems()
+    await fetchItems(...args) // 重新加载第一页
+  }
+
+  // 重置分页（与刷新数据功能相同）
+  const resetPagination = async (...args) => {
+    await refreshItems(...args)
   }
 
   return {
@@ -43,8 +49,8 @@ export const usePagination = (apiFunction, pageSize = 10) => {
     currentPage,
     loading,
     hasMore,
-    timestamp,
     fetchItems,
     refreshItems,
+    resetPagination, // 重新引入 resetPagination
   }
 }

@@ -7,66 +7,70 @@
       </button>
     </div>
 
-    <div style="margin-top: 8vh;height: 92vh;overflow-y: auto;">
+    <div style="margin-top: 8vh; height: 92vh; overflow-y: auto;">
 
+      <!-- 帖子内容 -->
       <div class="post-content">
-        <textarea v-model="postContent" placeholder="输入帖子内容" class="post-textarea" maxlength="200"></textarea>
+        <textarea v-model="publishStore.formData.postContent" placeholder="输入帖子内容" class="post-textarea"
+          maxlength="200"></textarea>
         <div class="content-line2">
-          <van-uploader preview-size="18.5vw" class="uploader" v-model="fileList" multiple :max-count="3" />
-          <p class="textPrompt">{{ postContent.length }}/200</p>
+          <van-uploader preview-size="18.5vw" class="uploader" v-model="publishStore.formData.fileList" multiple
+            :max-count="3" />
+          <p class="textPrompt">{{ publishStore.formData.postContent.length }}/200</p>
         </div>
       </div>
 
+      <!-- 标题、悬赏类型、标签等 -->
       <div class="post-content">
         <span class="title">标题</span>
         <div class="post-title">
           <div class="title-line1">
-            <textarea v-model="postTitle" placeholder="输入标题" class="title-content" maxlength="20"
-              clearable="true"></textarea>
-            <img src="@/assets/images/x.png" alt="x" class="x" />
+            <textarea v-model="publishStore.formData.postTitle" placeholder="输入标题" class="title-content" maxlength="20"
+              clearable></textarea>
+            <img src="@/assets/images/x.png" alt="x" class="x" @click="clearTitle" />
           </div>
-          <p class="textPrompt">{{ postTitle.length }}/20</p>
+          <p class="textPrompt">{{ publishStore.formData.postTitle.length }}/20</p>
         </div>
 
-        <div class="title">悬赏类型</div>
+        <div class="title">{{ cateTitle }}</div>
         <div class="categories">
           <div class="item" v-for="(item, index) in categories" :key="index" @click="changeCate(item, index)"
-            :class="index === activeIndex ? 'active' : null">
+            :class="index === publishStore.formData.activeIndex ? 'active' : null">
             <span class="category-name">{{ item.name }}</span>
           </div>
         </div>
 
         <div class="title">标签</div>
-        <TagsBar class="tagsBar" :options="tagOptions" @update:selectedTags="handleSelectedTags" />
+        <TagsBar class="tagsBar" :options="publishStore.formData.tagOptions" @update:selectedTags="handleSelectedTags"
+          v-model:selectedTags="publishStore.formData.selectedTags" />
 
         <div class="reward">
           <div class="reward-part1">
-            <div class="title">酬金</div>
-            <div class="item" @click="toBeDiscussed" :class="isDiscussed ? 'active' : null">
+            <div class="title">金额</div>
+            <div v-if="type === 'task'" class="item" @click="toBeDiscussed"
+              :class="publishStore.formData.isDiscussed ? 'active' : null">
               <span>待议</span>
             </div>
           </div>
 
           <div class="reward-amount">
             ￥
-            <InputFrame v-model="reward" maxWidth="150" type="number" class="amount" :disabled="isDiscussed" />
+            <InputFrame v-model="publishStore.formData.reward" maxWidth="150" type="number" class="amount"
+              :disabled="publishStore.formData.isDiscussed" />
           </div>
         </div>
-
-
-
       </div>
 
+      <!-- 联系方式和任务地点 -->
       <div class="post-content" style="margin-bottom: 10vh;">
         <div class="post-phone">
           <div class="title">联系方式</div>
-          <InputFrame v-model="phone" maxLength="11" type="number" placeholder="请输入手机号" />
+          <InputFrame v-model="publishStore.formData.phone" maxLength="11" type="number" placeholder="请输入手机号" />
         </div>
 
-        <div class="post-address" @click="showAddressPopup = true">
+        <div class="post-address" @click="showAddressPopup = true" v-if="type === 'task'">
           <div class="title">任务地点</div>
-          <div class="address"> {{ address }}</div>
-
+          <div class="address"> {{ publishStore.formData.address }}</div>
           <img src="@/assets/images/right.png" alt="right" class="right">
         </div>
 
@@ -77,61 +81,50 @@
             <div class="map-search" @click="openMapSearch">地图
               <img src="@/assets/images/right.png" alt="right" class="right">
             </div>
-
           </div>
           <div class="address-popup">
             <!-- 预设地址列表 -->
             <div v-for="(item, index) in presetAddresses" :key="index" class="address-item"
               @click="selectPresetAddress(item)">
               {{ item }}
-
             </div>
           </div>
         </van-popup>
-
       </div>
     </div>
-
-
   </div>
-
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-const address = ref('无')
-const postContent = ref('')
-const postTitle = ref('')
-const activeIndex = ref(0)
-const isDiscussed = ref(false)
-const reward = ref('0')
-const phone = ref('')
+import { onMounted, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { usePublishStore } from '@/stores/publish';
+import TagsBar from '@/components/TagsBar.vue'; // 确保路径正确
+import InputFrame from '@/components/InputFrame.vue'; // 确保路径正确
 
 const router = useRouter();
 const route = useRoute();
+const publishStore = usePublishStore();
 
 const showAddressPopup = ref(false);
 
+// 动态标题和类别列表
+const type = ref('');
+const cateTitle = ref('');
+const categories = ref([]);
 
 // 预设地址列表
 const presetAddresses = ref([
-  '北京市 朝阳区 国贸北京市 朝阳区 国贸北京市 朝阳区 国贸,北京市 朝阳区 国贸',
-  '北京市 海淀区 中关村',
-  '上海市 黄浦区 人民广场',
-  '广州市 天河区 珠江新城',
   '北京市 朝阳区 国贸',
   '北京市 海淀区 中关村',
   '上海市 黄浦区 人民广场',
   '广州市 天河区 珠江新城',
-  '北京市 朝阳区 国贸',
-  '北京市 海淀区 中关村',
-  '上海市 黄浦区 人民广场',
-  '广州市 天河区 珠江新城',
+  // 更多地址...
 ]);
 
 // 选择预设地址
 const selectPresetAddress = (selectedAddress) => {
-  address.value = selectedAddress; // 更新任务地点
+  publishStore.formData.address = selectedAddress; // 更新任务地点
   showAddressPopup.value = false; // 关闭弹窗
   console.log('选中的地址:', selectedAddress);
 };
@@ -140,83 +133,107 @@ const selectPresetAddress = (selectedAddress) => {
 const openMapSearch = () => {
   showAddressPopup.value = false; // 关闭弹窗
   console.log('打开地图搜索页面');
-  router.push('/mapSearch'); // 跳转到地图搜索页面
+  router.push({ name: 'mapSearch' }); // 跳转到地图搜索页面
 };
 
+// 返回上一页
 const handleBack = () => {
   console.log('点击退出');
   router.back();
-}
+};
 
+// 待议
 const toBeDiscussed = () => {
-  isDiscussed.value = !isDiscussed.value
-  if (isDiscussed.value) {
-    reward.value = '0';
-    console.log('待议')
+  publishStore.formData.isDiscussed = !publishStore.formData.isDiscussed;
+  if (publishStore.formData.isDiscussed) {
+    publishStore.formData.reward = '0';
+    console.log('待议');
+  } else {
+    console.log('取消待议');
   }
-  else {
-    console.log('取消待议')
+};
+
+// 切换类别并获取对应的标签选项
+const changeCate = async (item, index) => {
+  console.log('切换类别:', item.name);
+  publishStore.formData.activeIndex = index; // 更新 activeIndex
+  publishStore.formData.selectedTags = [];
+  try {
+    await publishStore.fetchTagOptions(item.id); // 根据类别名称获取标签
+  } catch (error) {
+    console.error('获取标签选项失败:', error);
   }
+};
 
-}
 
-const changeCate = (item, index) => {
-  activeIndex.value = index // 更新 activeIndex
-}
-const categories = ref([
-  {
-    name: '求助',
-  },
-  {
-    name: '跑腿',
-  },
-  {
-    name: '求购',
-  },
-  {
-    name: '寻物',
-  }
-])
-
-// 响应式的文件列表
-const fileList = ref([
-  { url: 'https://img.yzcdn.cn/vant/cat.jpeg' },
-  // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
-  { url: 'https://cloud-image', isImage: true },
-])
 
 // 处理图片上传成功后的回调
 const handleAfterRead = (file) => {
-  fileList.value.push(file)
-}
-
-const selectedTags = ref([]); // 用于存储选中的标签 ID
+  publishStore.formData.fileList.push(file);
+};
 
 // 监听子组件的事件，更新选中的标签 ID
 const handleSelectedTags = (tags) => {
-  selectedTags.value = tags;
-  console.log('选中的标签 ID:', selectedTags.value);
+  publishStore.formData.selectedTags = tags;
+  console.log('选中的标签 ID:', tags);
 };
 
-// 模拟标签选项
-const tagOptions = [
-  { id: 1, name: '关注' },
-  { id: 2, name: '推荐' },
-  { id: 3, name: '本地' },
-  { id: 4, name: '新闻' },
-  { id: 5, name: '汽车' },
-  { id: 6, name: '直播' },
-  { id: 7, name: '游戏' },
-  { id: 8, name: '小说' },
-  { id: 9, name: '美女' },
-];
+// 清除标题
+const clearTitle = () => {
+  publishStore.formData.postTitle = '';
+};
 
+// 发布按钮逻辑
+const handlePost = () => {
+  // 发布逻辑
+  console.log('发布内容:', publishStore.formData);
+};
 
-onMounted(() => {
-  console.log(route.params.type);
-})
+// 在发布页挂载时设置类别和检查是否有传回的地点信息
+onMounted(async () => {
+  type.value = route.params.type;
+  if (type.value === 'task') {
+    cateTitle.value = '悬赏类型';
+    categories.value = [
+      { name: '求助', id: 1 },
+      { name: '跑腿', id: 2 },
+      { name: '求购', id: 3 },
+      { name: '寻物', id: 4 },
+    ];
+  } else if (type.value === 'item') {
+    cateTitle.value = '商品类型';
+    categories.value = [
+      { name: '数码产品', id: 1 },
+      { name: '学习资料', id: 2 },
+      { name: '门票', id: 3 },
+      { name: '乐器', id: 4 },
+      { name: '餐饮代购', id: 5 },
+      { name: '服饰美妆', id: 6 },
+      { name: '会员', id: 7 },
+      { name: '游戏', id: 8 },
+      { name: '运动用品', id: 9 },
+      { name: '其他', id: 10 },
+    ];
+  }
+
+  console.log('帖子类型', type.value);
+  if (route.query.location) {
+    publishStore.formData.location = JSON.parse(route.query.location);
+    publishStore.formData.address = publishStore.formData.location.name;
+    console.log('选中的位置', publishStore.formData.location);
+  }
+
+  // 根据当前类别获取标签选项
+  const currentCategory = categories.value[publishStore.formData.activeIndex]?.id;
+  if (currentCategory) {
+    try {
+      await publishStore.fetchTagOptions(currentCategory);
+    } catch (error) {
+      console.error('初始化获取标签选项失败:', error);
+    }
+  }
+});
 </script>
-
 <style scoped>
 .map-search {
   font-size: 16px;
@@ -322,6 +339,7 @@ onMounted(() => {
   /* 上右下左 */
   color: #4F4D4D;
   padding: 2vh 2vw 4vh 2vw;
+
 }
 
 .title-line1 {

@@ -8,7 +8,7 @@
 
     <ul v-if="combinedResults.length" class="search-results">
       <li v-for="result in combinedResults" :key="result.id" @click="handleClick(result)"
-        :class="{ 'custom-marker': result.type === 'custom', 'amap-suggestion': result.type === 'amap' }">
+        :class="{ 'custom-marker': result.type === 'shared' || 'user', 'map-suggestion': result.type === 'map' }">
         {{ result.name }}
       </li>
     </ul>
@@ -36,7 +36,7 @@ const searchQuery = ref('');
 // 自定义标记搜索结果
 const searchResults = ref([]);
 // 高德地图搜索建议结果
-const amapResults = ref([]);
+const mapResults = ref([]);
 // 合并后的搜索结果
 const combinedResults = ref([]);
 
@@ -51,23 +51,23 @@ const handleAutoCompleteComplete = (data) => {
   console.log("搜索完成", data.tips)
   if (data) {
     data.tips = data.tips.slice(0, maxSuggestions)
-    amapResults.value = data.tips.map((tip) => ({
-      id: `amap-tip.id`,
+    mapResults.value = data.tips.map((tip) => ({
+      id: `map-tip.id`,
       name: tip.name,
       location: tip.location, // { lng: 经度, lat: 纬度 }
-      type: 'amap',
+      type: 'map',
     }));
   } else {
-    amapResults.value = [];
+    mapResults.value = [];
   }
-  console.log("高德地图搜索结果", amapResults.value)
+  console.log("高德地图搜索结果", mapResults.value)
   updateCombinedResults();
 };
 
 // 处理 AutoComplete 错误事件
 const handleAutoCompleteError = (error) => {
   console.error('AutoComplete 错误:', error);
-  amapResults.value = [];
+  mapResults.value = [];
   updateCombinedResults();
 };
 
@@ -80,7 +80,7 @@ const onSearchInput = () => {
 
   if (!query) {
     // 如果搜索框为空，清空所有结果
-    amapResults.value = [];
+    mapResults.value = [];
     combinedResults.value = [];
     return;
   }
@@ -88,12 +88,15 @@ const onSearchInput = () => {
   // 自定义标记搜索
   const lowerQuery = query.toLowerCase();
   searchResults.value = props.markers
-    .filter(marker => marker.name.toLowerCase().includes(lowerQuery))
+    .filter(marker =>
+      (marker.type === 'user' || marker.type === 'shared') &&
+      marker.name.toLowerCase().includes(lowerQuery)
+    )
     .map(marker => ({
-      id: `custom-${marker.name}`,
+      id: marker.id,
       name: marker.name,
       position: marker.position, // [lng, lat]
-      type: 'custom',
+      type: marker.type,
     }));
 
   // 使用高德地图的自动完成服务
@@ -108,7 +111,7 @@ const onSearchInput = () => {
 const updateCombinedResults = () => {
   combinedResults.value = [
     ...searchResults.value,
-    ...amapResults.value,
+    ...mapResults.value,
   ];
   console.log("合并结果", combinedResults.value)
 };
@@ -138,7 +141,7 @@ onMounted(() => {
         initializeAutocomplete(AMap)
       })
       .catch((e) => {
-        console.error('高德地图API加载失败:', e)
+        console.error('搜索框组件高德地图API加载失败:', e)
       })
   }
 });
@@ -230,5 +233,5 @@ onBeforeUnmount(() => {
   font-style: italic;
 }
 
-.search-results li.amap-suggestion {}
+.search-results li.map-suggestion {}
 </style>

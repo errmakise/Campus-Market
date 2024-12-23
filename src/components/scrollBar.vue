@@ -1,6 +1,6 @@
 <template>
   <div class="scrollBarWrapper" :style="scrollBarWrapperStyle">
-    <div class="scrollBarContent" :class="direction === 'y' ? 'directionY' : 'directionX'" ref="scrollBarContent">
+    <div class="scrollBarContent directionX" ref="scrollBarContent">
       <slot></slot>
     </div>
   </div>
@@ -11,11 +11,6 @@ import { ref, computed, watch, nextTick, onMounted } from "vue";
 
 // Props
 const props = defineProps({
-  direction: {
-    type: String,
-    default: "x",
-    validator: value => value === "x" || value === "y"
-  },
   activeIndex: {
     type: Number,
     default: 0,
@@ -27,50 +22,35 @@ const props = defineProps({
 const scrollBarContent = ref(null);
 
 // Computed property
-const scrollBarWrapperStyle = computed(() =>
-  props.direction === "y"
-    ? { height: "100%" }
-    : { width: "100%" }
-);
+const scrollBarWrapperStyle = computed(() => ({
+  width: "100%" // 固定为水平排列
+}));
 
 // Methods
 const initItemDisplay = () => {
   const content = scrollBarContent.value;
-  const contentItem = content.children;
-  [].forEach.call(contentItem, item => {
-    if (props.direction === "y") {
-      item.style.display = "block";
-    } else {
-      item.style.display = "inline-block";
-    }
+  const contentItems = content.children;
+  Array.from(contentItems).forEach(item => {
+    item.style.display = "inline-block"; // 仅水平排列
   });
 };
 
 const handleChange = () => {
   nextTick(() => {
-    const content = scrollBarContent.value; // Element that scrolls
-    const activeItem = content.children[props.activeIndex]; // Currently selected element
-    if (!activeItem) return false;
+    const content = scrollBarContent.value;
+    const activeItem = content.children[props.activeIndex];
+    if (!activeItem) return;
 
     const scrollOption = {
-      top: 0,
       left: 0,
       behavior: "smooth"
     };
 
-    if (props.direction === "y") {
-      const contentHeight = content.offsetHeight;
-      const activeItemHeight = activeItem.offsetHeight;
-      const activeItemTop = activeItem.offsetTop;
-      const offset = activeItemTop - (contentHeight - activeItemHeight) / 2;
-      scrollOption.top = offset;
-    } else {
-      const contentWidth = content.offsetWidth;
-      const activeItemWidth = activeItem.offsetWidth;
-      const activeItemLeft = activeItem.offsetLeft;
-      const offset = activeItemLeft - (contentWidth - activeItemWidth) / 2;
-      scrollOption.left = offset;
-    }
+    const contentWidth = content.offsetWidth;
+    const activeItemWidth = activeItem.offsetWidth;
+    const activeItemLeft = activeItem.offsetLeft;
+    const offset = activeItemLeft - (contentWidth - activeItemWidth) / 2;
+    scrollOption.left = offset;
 
     content.scrollTo(scrollOption);
   });
@@ -104,19 +84,11 @@ onMounted(() => {
     white-space: nowrap;
     word-break: keep-all;
     -webkit-overflow-scrolling: touch;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: flex;
 
 
-
-    &.directionX {
-      overflow-x: scroll;
-      overflow-y: hidden;
-    }
-
-    &.directionY {
-      overflow-x: hidden;
-      overflow-y: scroll;
-      height: 100%;
-    }
 
     &::-webkit-scrollbar {
       display: none;

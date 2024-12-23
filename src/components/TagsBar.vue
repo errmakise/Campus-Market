@@ -1,9 +1,10 @@
 <template>
   <div class="tags-container">
+    <!-- 水平滚动条 -->
     <scrollBar direction="x">
-      <button class="scrollBarItem" v-for="(item, index) in options" :key="index" @click="toggleNav(item, index)"
-        :class="activeIndex.includes(index) ? 'active' : null">
-        <span>{{ item.name }}</span>
+      <button class="scrollBarItem" v-for="(item) in options" :key="item.tagId" @click="toggleTag(item.tagId)"
+        :class="{ active: selectedTags.includes(item.tagId) }">
+        <span>{{ item.tagName }}</span>
       </button>
     </scrollBar>
 
@@ -11,11 +12,11 @@
     <img src="@/assets/images/extendTags.png" class="image" @click="showPopup = true" />
 
     <!-- 弹窗 -->
-    <van-popup v-model:show="showPopup" round>
+    <van-popup v-model:show="showPopup" position="bottom" round>
       <div class="popup-content">
-        <button class="popup-button" v-for="(item, index) in options" :key="index" @click="toggleNav(item, index)"
-          :class="activeIndex.includes(index) ? 'active' : null">
-          <span>{{ item.name }}</span>
+        <button class="popup-button" v-for="(item) in options" :key="item.tagId" @click="toggleTag(item.tagId)"
+          :class="{ active: selectedTags.includes(item.tagId) }">
+          <span>{{ item.tagName }}</span>
         </button>
       </div>
     </van-popup>
@@ -23,73 +24,57 @@
 </template>
 
 <script setup>
+import { ref, defineProps, defineEmits } from 'vue';
 
-import { ref } from 'vue';
-import { Popup } from 'vant';
-
-// 控制弹窗显示/隐藏
-const showPopup = ref(false);
-
-// 使用数组记录当前激活的索引（支持多选）
-const activeIndex = ref([]);
-
+// 定义组件的 props
 const props = defineProps({
   options: {
     type: Array,
     default: () => [
-      { id: 1, name: '关注' },
-      { id: 2, name: '推荐' },
-      { id: 3, name: '本地' },
-      { id: 4, name: '新闻' },
-      { id: 5, name: '汽车' },
-      { id: 6, name: '直播' },
-      { id: 7, name: '游戏' },
-      { id: 8, name: '小说' },
-      { id: 9, name: '美女' },
+      { tagId: 1, tagName: '关注' },
+      { tagId: 2, tagName: '推荐' },
+      { tagId: 3, tagName: '本地' },
+      { tagId: 4, tagName: '新闻' },
+      { tagId: 5, tagName: '汽车' },
+      { tagId: 6, tagName: '直播' },
+      { tagId: 7, tagName: '游戏' },
+      { tagId: 8, tagName: '小说' },
+      { tagId: 9, tagName: '美女' },
     ],
+  },
+  selectedTags: {
+    type: Array,
+    default: () => [],
   },
 });
 
-// 定义组件事件，用于通知父组件选中标签
+// 定义组件的事件
 const emit = defineEmits(['update:selectedTags']);
 
-// 切换选中状态
-const toggleNav = (item, index) => {
-  const idx = activeIndex.value.indexOf(index);
+// 控制弹窗显示/隐藏
+const showPopup = ref(false);
 
-  if (idx === -1) {
-    activeIndex.value.push(index);
+// 切换标签选中状态
+const toggleTag = (tagId) => {
+  let updatedTags;
+  if (props.selectedTags.includes(tagId)) {
+    // 如果已经选中，则移除
+    updatedTags = props.selectedTags.filter(id => id !== tagId);
+    console.log('移除的标签 ID:', tagId);
   } else {
-    activeIndex.value.splice(idx, 1);
-  }
+    // 如果未选中，则添加
+    updatedTags = [...props.selectedTags, tagId];
 
-  // 通知父组件选中的标签 ID
-  const selectedIds = activeIndex.value.map((i) => props.options[i].id);
-  emit('update:selectedTags', selectedIds);
+  }
+  // 触发事件，更新父组件的 selectedTags
+  // 为了复用性，不直接修改pinia中的参数，而是提交给父组件修改
+  emit('update:selectedTags', updatedTags);
 };
 </script>
 
 <style scoped>
-.popup-button {
-  padding: 5px 15px;
-  color: #4F4D4D;
-  background-color: #EDEDED;
-
-  display: flex;
-
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.image {
-  height: 30px;
-  cursor: pointer;
-}
-
 .tags-container {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -101,27 +86,46 @@ const toggleNav = (item, index) => {
   padding: 5px 15px;
   color: #4F4D4D;
   background-color: #EDEDED;
-
   display: flex;
-
   border: none;
   border-radius: 20px;
   margin-right: 2vw;
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.active {
+.scrollBarItem.active {
   color: white;
   background-color: #4794FF;
   font-weight: 600;
 }
 
+.image {
+  height: 30px;
+  cursor: pointer;
+}
+
 .popup-content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
   gap: 10px;
-  justify-content: space-between;
   padding: 4vh 8vw;
+}
+
+.popup-button {
+  padding: 5px 15px;
+  color: #4F4D4D;
+  background-color: #EDEDED;
+  display: flex;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.popup-button.active {
+  color: white;
+  background-color: #4794FF;
+  font-weight: 600;
 }
 </style>

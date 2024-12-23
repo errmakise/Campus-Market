@@ -27,10 +27,10 @@ AMapLoader.load({
   .catch((e) => {
     console.error('高德地图API加载失败:', e)
   })
-
+const pinia = createPinia()
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-
+app.use(pinia)
 app.mount('#app')

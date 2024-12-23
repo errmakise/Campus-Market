@@ -1,11 +1,12 @@
 <template>
   <div class="container">
-    <SearchBox />
+    <MapComponent />
 
   </div>
 </template>
 
 <script setup>
+import MapComponent from '@/components/MapComponent.vue';
 import SearchBox from '@/components/SearchBox.vue';
 
 

@@ -5,36 +5,42 @@
     <div class="post">
       <div class="part">
         <div class="publisher">
-          <div class="left-part">
-            <Avatar :src="publisherAvator" size="5vh" />
+          <div class="left-part" @click="handleClickPublisher">
+            <Avatar :src="postDetail.avatarUrl" size="5vh" />
 
             <div class="publisher-info">
-              <div class="publisher-name">张三</div>
+              <div class="publisher-name">{{ postDetail.username }}</div>
               <div class="publisher-time">
                 {{ formattedTime }}
               </div>
             </div>
           </div>
 
-          <button class="follow-button" :style="buttonStyle" @click="handleClick">
+          <button class="follow-button" :style="buttonStyle" @click="handleFollowClick">
             <img src="@/assets/images/follow.png" alt="icon" class="button-icon" />
             <span>关注</span>
           </button>
         </div>
 
         <div class="divider"></div>
-        <PostContent :deadline="deadline" :reward="reward" :address="address" :content="content" :images="images"
-          :tags="tags" />
+        <PostContent :deadline="postDetail.deadline" :reward="postDetail.money" :address="postDetail.address"
+          :content="postDetail.content" :images="postDetail.picUrl" :tags="postDetail.tags"
+          @click-report="clickPostReport" />
       </div>
 
       <div class="part">
         <span style="font-size: 16px; font-weight: 600">评论</span>
         <div class="publish-comment">
           <Avatar :src="userAvator" size="5vh" />
-          <input class="input-frame" type="text" placeholder="点击发布评论" v-model="comment" />
+          <input class="input-frame" type="text" placeholder="点击发布评论" @click="clickPublishTopComment" v-model="comment"
+            readonly />
         </div>
 
-        <div class="comment-list"></div>
+
+        <!-- 评论列表 -->
+        <div class="comment-list">
+          <PostCommentCard v-for="cmt in paginatedComments.items.value" :key="cmt.id" :comment="cmt" />
+        </div>
 
         <div class="show-comment">
           <span>查看全部评论</span>
@@ -47,40 +53,180 @@
       </div>
     </div>
 
-    <PostBottomBar :commentCount="commentCount" :favouriteCount="favouriteCount" :likeCount="likeCount"
-      barType="post" />
+    <PostBottomBar :commentCount="postDetail.commentCount" :favouriteCount="postDetail.favoriteCount"
+      :likeCount="postDetail.likeCount" barType="post" />
+
+
+    <!-- 评论弹出层 -->
+    <van-popup v-model:show="showPublishComment" position="bottom" :style="{ height: '20%' }">
+      <div class="popup-content">
+        <input ref="commentTextarea" v-model="commentInput" placeholder="输入评论" class="comment-input" maxlength="200" />
+        <button class="comment-button" @click="submitComment">提交</button>
+      </div>
+    </van-popup>
 
   </div>
 
 </template>
 
 <script setup>
-import PostContent from '@/components/PostContent.vue'
-import SearchBar from '@/components/SearchBar.vue'
+
 import { formatTime } from '@/utils/timeFormatter'
-const comment = ref('')
+import { usePagination } from '@/utils/usePagination.js'
+import { getPostDetail, postComment, getCommentList } from '@/api/api.js'
+import { useReportStore } from '@/stores/report'
 
-const tags = ref(['任务', '求助'])
-const publisherAvator = ref('https://img.yzcdn.cn/vant/cat.jpeg')
-const userAvator = ref('https://img.yzcdn.cn/vant/cat.jpeg')
+const reportStore = useReportStore()
 
-const createdAt = ref('2023-12-11T11:50:00.000Z')
-const formattedTime = computed(() => formatTime(createdAt.value))
-const deadline = ref('2023-07-11T11:50:00.000Z')
-const reward = ref('1000')
-const address = ref('上海市')
-const content = ref('我是任务详情')
-const images = ref([
-  'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
-  'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
-])
+const userAvator = ref('https://img.yzcdn.cn/vant/cat.jpeg');
+const formattedTime = computed(() =>
+  formatTime(postDetail.value.createTime));
 
-const commentCount = ref('120')
-const favouriteCount = ref('100')
-const likeCount = ref('100')
+const router = useRouter()
+const route = useRoute()
+const postId = route.params.postId;
+const postType = ref(route.params.postType);
+const postDetail = ref({})
+
+
+const paginatedComments = usePagination(getCommentList, 10) // 每页加载10条评论
+
+
+const commentInput = ref('') // 用于弹出层的评论输入
+const comment = ref('') // 用于发布评论输入框，readonly
+const showPublishComment = ref(false)
+const commentRoot = ref(0) // 0表示一级评论，1表示二级评论
+const commentParentId = ref() // 上级评论的id
+const commentReplyId = ref() // 上级评论发布者的id
+const commentTextarea = ref(null) // 引用 textarea 元素
+
+// 点击发布一级评论
+const clickPublishTopComment = () => {
+  console.log('点击发布一级评论');
+  showPublishComment.value = true;
+  commentRoot.value = 0;
+  commentParentId.value = null;
+  commentReplyId.value = null;
+}
+
+// 打开弹出层时自动聚焦 textarea
+watch(showPublishComment, (newVal) => {
+  if (newVal) {
+    nextTick(() => {
+      if (commentTextarea.value) {
+        commentTextarea.value.focus()
+      }
+    })
+  }
+})
+
+
+// 提交评论
+const submitComment = () => {
+
+  if (commentInput.value.trim().length === 0) {
+    showFailToast('请输入评论内容!')
+    console.log('评论内容为空');
+    showPublishComment.value = false;
+    commentInput.value = '';
+    return
+  }
+  try {
+    postComment(postId, commentInput.value, commentRoot.value,
+      commentParentId.value, commentReplyId).then(() => {
+        showSuccessToast('评论提交成功');
+        showPublishComment.value = false
+        commentInput.value = '';
+      });
+  } catch (error) {
+    showFailToast('评论提交失败');
+  }
+}
+
+
+// 点击举报按钮
+const clickPostReport = () => {
+  console.log('点击举报按钮');
+
+  reportStore.setReportData({
+    type: 1,
+    object: {
+      id: postId,
+      title: postDetail.value.title,
+      imageUrl: postDetail.value.picUrl ? postDetail.value.picUrl[0] : '',
+    }
+  })
+  console.log('reportStore:', reportStore.reportData);
+
+  // 跳转到 ReportPage
+  router.push({ name: 'report' })
+}
+
+// 点击发布者
+const handleClickPublisher = () => {
+
+  console.log('点击发布者');
+  router.push({
+    name: 'userDetail',
+    params: { userId: postDetail.value.userId },
+  });
+}
+
+const c = ref({})
+onMounted(() => {
+  console.log('postId:', route.params.postId);
+
+  try {
+    getPostDetail(postId).then((response) => {
+      postDetail.value = response;
+    })
+    paginatedComments.fetchData(postId).then((response) => {
+      c.value = paginatedComments.items.value[0]
+      console.log('评论列表:', c.value);
+    })
+  } catch (error) {
+    console.log('加载信息失败', error);
+  }
+})
+
+const handleFollowClick = () => {
+  console.log('点击关注按钮');
+}
 </script>
 
 <style scoped>
+.comment-list {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+.comment-button {
+  color: white;
+  background-color: #613eea;
+  width: 15vw;
+  margin: 0.2vh 0vw;
+  border: none;
+  border-radius: 20px;
+}
+
+.comment-input {
+  width: 74vw;
+  border: none;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  padding: 0vh 3vw;
+  height: 5vh;
+}
+
+.popup-content {
+  width: 100%;
+  padding: 1.5vh 3vw;
+  display: flex;
+  justify-content: space-between;
+}
+
 .show-comment {
   display: flex;
   color: #414141;
@@ -280,6 +426,7 @@ const likeCount = ref('100')
   display: flex;
   flex-direction: column;
   gap: 1.8vh;
+  width: 100%;
 }
 
 .container {

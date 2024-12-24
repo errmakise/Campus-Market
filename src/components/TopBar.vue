@@ -1,8 +1,8 @@
 <template>
 
   <div class="top-container">
-    <img v-if="!isRound" src="@/assets/images/left.png" class="left" />
-    <img v-else class="left-round" src="@/assets/images/left-round.png" alt="left-round" />
+    <img v-if="!isRound" src="@/assets/images/left.png" class="left" @click="clickBack" />
+    <img v-else class="left-round" src="@/assets/images/left-round.png" alt="left-round" @click="clickBack" />
 
     <span class="title">{{ title }}</span>
     <img v-if="props.isEllipsis" src="@/assets/images/Ellipsis.png" class="ellipsis" />
@@ -12,6 +12,11 @@
 </template>
 
 <script setup>
+
+const clickBack = () => {
+  window.history.back()
+}
+
 const props = defineProps({
   title: String,
   isEllipsis: {

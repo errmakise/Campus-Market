@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="card-container" @click="handleClickCard">
     <div class="card-tags">
       <div class="card-tag" v-for="tag in props.tags" :key="tag">
         #{{ tag }}
@@ -17,7 +17,7 @@
     <div class="card-letter">{{ formattedTime }}</div>
     <div class="card-bottom">
       <span class="card-price">酬金:￥{{ props.reward }}</span>
-      <button :class="'round-button'" @click="handleClick">
+      <button :class="'round-button'" @click="handleAcceptClick">
         <span>接单</span>
       </button>
     </div>
@@ -28,11 +28,56 @@
 
 <script setup>
 import { formatTime } from '@/utils/timeFormatter';
+import { postCreateTask } from "@/api/api.js";
+
+const router = useRouter();
+const handleClickCard = () => {
+  console.log('点击卡片');
+  router.push({
+    name: 'post', params: { postType: '0', postId: props.postId },
+  });
+};
+// 点击接单按钮
+const handleAcceptClick = async () => {
+  console.log('点击接单按钮');
+  showLoadingToast({
+    message: '加载中...',
+    forbidClick: true,
+  });
+  try {
+    const response = await postCreateTask(props.postId);
+    console.log('接单成功', response);
+    showSuccessToast({
+      message: '接单成功',
+      closeOnClick: true,
+      closeOnClickOverlay: true,
+      forbidClick: true,
+      onClose: () => {
+        console.log('关闭弹窗,刷新页面');
+        window.location.reload();
+      },
+    });
+    ;
+  } catch (error) {
+    console.error('接单失败', error);
+    showFailToast({
+      message: '接单失败',
+      closeOnClick: true,
+      closeOnClickOverlay: true,
+      forbidClick: true,
+      onClose: () => {
+        console.log('关闭弹窗,刷新页面');
+        window.location.reload();
+      },
+    });
+
+  }
+};
 
 const formattedTime = computed(() => formatTime(props.createdAt));
 
 const props = defineProps({
-  taskId: {
+  postId: {
     type: Number,
     required: true,
   },

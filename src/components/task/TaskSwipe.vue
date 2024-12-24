@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <van-swipe class="content" :autoplay="3000" indicator-color="white">
-        <van-swipe-item class="item" v-for="(task, index) in props.tasks" :key="index">
+        <van-swipe-item class="item" v-for="(task, index) in props.tasks" :key="index" @click="clickTask(item.id)">
           <div class="line1">
             <span class="deadLine">截止时间：{{ task.deadLine }} </span>
             <span class="createdAt"> {{ formatDate(task.createdAt) }}</span>
@@ -35,6 +35,12 @@
 </template>
 
 <script setup>
+
+const router = useRouter();
+const clickTask = (id) => {
+  router.push({ name: 'post', params: { postId: id, postType: 0 } })
+}
+
 const props = defineProps({
   tasks: {
     type: Array,

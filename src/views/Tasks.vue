@@ -21,7 +21,7 @@
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
         <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
           <template #card="{ element }">
-            <TaskCard :taskId="element.id" :title="element.title" :reward="element.price"
+            <TaskCard :postId="element.id" :title="element.title" :reward="element.price"
               :imageUrl="element.imageUrl" />
           </template>
         </WaterfallGrid>

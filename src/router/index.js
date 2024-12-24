@@ -31,10 +31,10 @@ const router = createRouter({
     {
       path: '/report',
       name: 'report',
-      component: () => import('../views/UserReport.vue'),
+      component: () => import('../views/Report.vue'),
     },
     {
-      path: '/userDetail',
+      path: '/userDetail/:userId',
       name: 'userDetail',
       component: () => import('../views/UserDetail.vue'),
     },
@@ -54,7 +54,7 @@ const router = createRouter({
       component: () => import('../views/Interaction.vue'),
     },
     {
-      path: '/post',
+      path: '/post/:postType/:postId',
       name: 'post',
       component: () => import('../views/PostDetail.vue'),
     },

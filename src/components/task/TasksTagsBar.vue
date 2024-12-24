@@ -64,7 +64,7 @@ const handleExtendTags = () => {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
+  width: 95%;
   height: 3.8vh;
   background-color: white;
   padding: 0px 6px;

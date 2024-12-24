@@ -28,12 +28,18 @@
       <div class="tags">
         <span v-for="tag in tags" :key="tag" class="tag">#{{ tag }}</span>
       </div>
-      <div class="report-button">举报</div>
+      <div class="report-button" @click="clickReport">举报</div>
     </div>
   </div>
 </template>
 
 <script setup>
+
+const emit = defineEmits(['clickReport']);
+const clickReport = () => {
+  emit('clickReport');
+
+};
 const props = defineProps({
   deadline: String,
   reward: String,
@@ -41,9 +47,9 @@ const props = defineProps({
   content: String,
   images: Array,
   tags: Array,
-  showFooter:{
-    type:Boolean,
-    default:true
+  showFooter: {
+    type: Boolean,
+    default: true
   },
 });
 </script>
@@ -103,4 +109,3 @@ const props = defineProps({
   cursor: pointer;
 }
 </style>
-

@@ -129,16 +129,16 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 // 初始化 AutoComplete
 onMounted(() => {
   if (window.AMap) {
-    initializeAutocomplete(window.AMap)
+    initializeAutoComplete(window.AMap)
   } else {
     // 如果AMap未加载，等待加载
     AMapLoader.load({
       key: import.meta.env.VITE_AMAP_KEY,
       version: '2.0',
-      plugins: ['AMap.Autocomplete'],
+      plugins: ['AMap.AutoComplete'],
     })
       .then((AMap) => {
-        initializeAutocomplete(AMap)
+        initializeAutoComplete(AMap)
       })
       .catch((e) => {
         console.error('搜索框组件高德地图API加载失败:', e)
@@ -149,7 +149,7 @@ onMounted(() => {
 // Autocomplete 实例
 let autoComplete = null
 // 初始化 Autocomplete
-const initializeAutocomplete = (AMap) => {
+const initializeAutoComplete = (AMap) => {
   AMap.plugin("AMap.AutoComplete", function () {
     //在回调函数中实例化插件，并使用插件功能
     autoComplete = new AMap.AutoComplete({

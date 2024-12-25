@@ -22,6 +22,8 @@
           <span class="post-title">{{ reportData.object.username }}</span>
         </div>
         <span class="post-title">{{ reportData.object.content }}</span>
+        <span class="post-time">{{ reportData.object.createTime
+          }}</span>
       </div>
 
       <div class="divider"></div>
@@ -121,6 +123,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.post-time {
+  font-size: 12px;
+  color: #8d8d8d;
+}
+
 .object {
   width: 100%;
   display: flex;

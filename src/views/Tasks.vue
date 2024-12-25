@@ -8,7 +8,7 @@
       <span>附近任务</span>
       <img src="@/assets/images/extendIcon.png" class="image" @click="handleClickNearby" alt="Nearby" />
     </div>
-    <TaskSwipe class="swipe" />
+    <TaskSwipe class="swipe" :tasks="nearbySwipe" />
 
     <!-- 任务类型标签 -->
     <TasksTypes class="categories" @tabClick="handleTabClick" :tabs="types" :selectedTab="selectedCategory" />
@@ -42,8 +42,8 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePagination } from "@/utils/usePagination";
-import { getItems, fetchTagOptions } from "@/api/api.js"; // 确保路径正确
-import { Toast } from 'vant'; // 导入 Vant 的 Toast 组件
+import { getItems, fetchTagOptions, getNearbySwipe } from "@/api/api.js"; // 确保路径正确
+import { showFailToast, showSuccessToast, Toast } from 'vant'; // 导入 Vant 的 Toast 组件
 
 const router = useRouter();
 
@@ -67,10 +67,11 @@ const tagsOptions = ref([]);
 const activeTagIndex = ref(0);
 
 // 使用封装的分页逻辑，传入当前类别和选中的标签
-const { items, loading, hasMore, fetchItems, refreshItems, currentPage, resetPagination } = usePagination(
-  (page, pageSize) => getItems(page, pageSize, selectedCategory.value, tagsOptions.value[activeTagIndex.value]?.id),
+const { items, loading, hasMore, fetchData, refreshItems, currentPage, resetPagination } = usePagination(
+  (page, pageSize) => getItems(page, pageSize, selectedCategory.value),
   10
 );
+//, tagsOptions.value[activeTagIndex.value]?.id
 
 const masonryContainer = ref(null);
 
@@ -85,7 +86,7 @@ const handleTabClick = async (typeId) => {
     tagsOptions.value = await fetchTagOptions(typeId);
     activeTagIndex.value = 0; // 默认选择第一个标签
     resetPagination();
-    fetchItems();
+    fetchData();
   } catch (error) {
     Toast.fail('获取标签失败，请稍后重试');
   }
@@ -95,7 +96,7 @@ const handleTabClick = async (typeId) => {
 const handleTagClick = (index) => {
   activeTagIndex.value = index;
   resetPagination();
-  fetchItems();
+  fetchData();
 };
 
 
@@ -117,7 +118,7 @@ const handleScroll = () => {
     const isBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 10;
     if (isBottom && !loading.value && hasMore.value) {
       currentPage.value += 1;
-      fetchItems();
+      fetchData();
     }
   }, 200);
 };
@@ -131,24 +132,93 @@ const onRefresh = async () => {
     activeTagIndex.value = 0;
     resetPagination();
     await refreshItems();
-    Toast.success('刷新成功');
+    showSuccessToast('刷新成功');
   } catch (error) {
-    Toast.fail('刷新失败，请稍后重试');
+    showFailToast('刷新失败，请稍后重试');
   } finally {
     isRefreshing.value = false;
   }
 };
 
+import AMapLoader from '@amap/amap-jsapi-loader'
 // 初始化时获取默认类别的标签和商品列表
 onMounted(async () => {
   try {
     tagsOptions.value = await fetchTagOptions(selectedCategory.value);
     activeTagIndex.value = 0;
-    fetchItems();
+    fetchData();
   } catch (error) {
-    Toast.fail('初始化失败，请稍后重试');
+    showFailToast('初始化失败，请稍后重试');
+  }
+
+  if (window.AMap) {
+    initializeGeolocation(window.AMap)
+    getLocation()
+  } else {
+    // 如果AMap未加载，等待加载
+    AMapLoader.load({
+      key: import.meta.env.VITE_AMAP_KEY,
+      version: '2.0',
+      plugins: ['AMap.Geolocation'],
+    })
+      .then((AMap) => {
+        initializeGeolocation(AMap)
+        getLocation()
+      })
+      .catch((e) => {
+        console.error('tasks主页高德地图API加载失败:', e)
+      })
   }
 });
+
+
+let geolocation = null
+const getLocation = () => {
+  if (geolocation) {
+    geolocation.getCurrentPosition(function (status, result) {
+      if (status == 'complete') {
+        handleGeolocationComplete(result)
+      } else {
+        handleGeolocationError(result)
+      }
+    });
+  } else {
+    console.error('Geolocation 未初始化');
+  }
+};
+
+// 初始化 Geolocation
+const initializeGeolocation = (AMap) => {
+  AMap.plugin("AMap.Geolocation", function () {
+    //在回调函数中实例化插件，并使用插件功能
+    geolocation = new AMap.Geolocation({
+      getCityWhenFail: true,
+    })
+  });
+}
+
+const location = ref(null);
+const nearbySwipe = ref([]);
+//
+const handleGeolocationComplete = (data) => {
+  console.log("定位完成", data)
+  location.value = { lat: data.position.lat, lng: data.position.lng };
+  console.log("当前位置", location.value)
+  getNearbySwipe(location.value.lat, location.value.lng)
+    .then((res) => {
+      nearbySwipe.value = res;
+      console.log("附近任务", res)
+    })
+    .catch((error) => {
+      console.error('获取附近任务失败', error);
+    });
+};
+
+const handleGeolocationError = (error) => {
+  console.error('定位失败', error);
+  location.value = null;
+
+};
 </script>
 
 

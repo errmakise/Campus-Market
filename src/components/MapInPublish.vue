@@ -9,12 +9,12 @@
     <van-popup v-model:show="showPopup" round position="bottom" class="popup add-address"
       @click-overlay="onClickOverlay">
 
-      <h3>添加点位信息</h3>
+      <h3 style="margin-right: auto;">添加点位信息</h3>
       <div class="input-box">
         点位名称：
         <input type="text" v-model="pointData.name" placeholder="请输入点位名称" class="input-frame" />
       </div>
-      <label style="margin-top: auto;">
+      <label style="margin-top: auto;margin-right: auto;">
         <input type="checkbox" v-model="pointData.sync" />
         同步给其他用户
       </label>
@@ -232,7 +232,7 @@ const createMarker = (marker) => {
 
 // 初始化地图
 const initializeMap = (AMap) => {
-  AMap.plugin("AMap.AutoComplete", function () {
+  AMap.plugin("", function () {
     //在回调函数中实例化插件，并使用插件功能
 
     // 初始化地图
@@ -326,7 +326,7 @@ onMounted(() => {
     AMapLoader.load({
       key: import.meta.env.VITE_AMAP_KEY,
       version: '2.0',
-      plugins: ['AMap.Autocomplete'],
+      plugins: [],
     })
       .then((AMap) => {
         initializeMap(AMap)
@@ -357,6 +357,7 @@ onUnmounted(() => {
 <style scoped>
 .add-address {
   height: 35vh;
+
 }
 
 .popup {
@@ -410,6 +411,7 @@ onUnmounted(() => {
   align-items: center;
   font-size: 16px;
   margin-top: 2vh;
+  width: 100%;
 }
 
 .input-frame {
@@ -426,6 +428,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   margin-top: 2vh;
+  width: 100%;
 }
 
 .popup-buttons button {

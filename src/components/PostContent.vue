@@ -21,7 +21,8 @@
     </div>
 
     <div class="image-gallery">
-      <img v-for="(image, index) in images" :key="index" :src="image" class="gallery-image" />
+      <!-- <img v-for="(image, index) in images" :key="index" :src="image" class="gallery-image" /> -->
+      <img :src="images" class="gallery-image" />
     </div>
 
     <div class="footer" v-if="showFooter">

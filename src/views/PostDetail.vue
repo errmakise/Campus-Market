@@ -54,7 +54,8 @@
     </div>
 
     <PostBottomBar :commentCount="postDetail.commentCount" :favouriteCount="postDetail.favoriteCount"
-      :likeCount="postDetail.likeCount" barType="post" />
+      :likeCount="postDetail.likeCount" barType="post" :isLiked="postDetail.isLiked"
+      :isFavorited="postDetail.isFavorited" />
 
 
     <!-- 评论弹出层 -->
@@ -153,7 +154,8 @@ const clickPostReport = () => {
     object: {
       id: postId,
       title: postDetail.value.title,
-      imageUrl: postDetail.value.picUrl ? postDetail.value.picUrl[0] : '',
+      // imageUrl: postDetail.value.picUrl ? postDetail.value.picUrl[0] : '',
+      imageUrl: postDetail.value.picUrl ? postDetail.value.picUrl : '',
     }
   })
   console.log('reportStore:', reportStore.reportData);

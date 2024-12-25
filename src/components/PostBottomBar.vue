@@ -6,11 +6,13 @@
         {{ commentCount }}
       </div>
       <div class="bottom-icon-button" @click="handleFavouriteClick">
-        <img src="@/assets/images/favourite.png" alt="icon" class="buttom-icon" />
+        <img :src="isFavorited ? '/src/assets/images/is-favorited.png' : '/src/assets/images/is-unfavorited.png'"
+          alt="icon" class="buttom-icon" />
         {{ favouriteCount }}
       </div>
       <div class="bottom-icon-button" @click="handleLikeClick">
-        <img src="@/assets/images/like.png" alt="icon" class="buttom-icon" />
+        <img :src="isLiked ? '/src/assets/images/is-liked.png' : '/src/assets/images/is-unliked.png'" alt="icon"
+          class="buttom-icon" />
         {{ likeCount }}
       </div>
     </div>
@@ -63,11 +65,25 @@ const props = defineProps({
     type: String,
     default: '100',
   },
+  isLiked: {
+    type: Boolean,
+    default: false,
+  },
+  isFavorited: {
+    type: Boolean,
+    default: false,
+  },
   likeCount: {
     type: String,
     default: '100',
   },
 })
+
+const commentCount = ref(props.commentCount)
+const favouriteCount = ref(props.favouriteCount)
+const likeCount = ref(props.likeCount)
+const isLiked = ref(props.isLiked)
+const isFavorited = ref(props.isFavorited)
 
 const emit = defineEmits(['comment', 'favourite', 'like', 'chat', 'main'])
 
@@ -79,11 +95,16 @@ const handleCommentClick = () => {
 const handleFavouriteClick = () => {
   emit('favourite')
   console.log('Favourite clicked')
+  isFavorited.value = !isFavorited.value;
+  favouriteCount.value = isFavorited.value ? favouriteCount.value + 1 : favouriteCount.value - 1;
+
 }
 
 const handleLikeClick = () => {
   emit('like')
   console.log('Like clicked')
+  isLiked.value = !isLiked.value;
+  likeCount.value = isLiked.value ? likeCount.value + 1 : likeCount.value - 1;
 }
 
 const handleChatClick = () => {

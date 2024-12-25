@@ -10,10 +10,9 @@
     </div>
     <div class="report-button" @click="clickReport">举报</div>
     <div @click="toggleLike" class="like">
-      <img
-        :src="props.comment.isLiked ? '/src/assets/images/post-comment-unlike.png' : '/src/assets/images/post-comment-like.png'"
+      <img :src="isLiked ? '/src/assets/images/post-comment-unlike.png' : '/src/assets/images/post-comment-like.png'"
         alt="Like" class="like-icon" />
-      <span>111</span>
+      <span>{{ likeCount }}</span>
     </div>
 
   </div>
@@ -25,10 +24,28 @@
 
 <script setup>
 import { formatTime } from '@/utils/timeFormatter'
+import { useReportStore } from '@/stores/report'
 const emit = defineEmits(['clickReport']);
+
+const reportStore = useReportStore()
+const router = useRouter()
 const clickReport = () => {
   emit('clickReport');
+  console.log('点击举报按钮');
+  reportStore.setReportData({
+    type: 2,
+    object: {
+      id: props.comment.id,
+      userAvatarUrl: props.comment.userAvatarUrl,
+      username: props.comment.username,
+      content: props.comment.content,
+      createTime: props.comment.createTime,
+    }
+  })
+  console.log('reportStore:', reportStore.reportData);
 
+  // 跳转到 ReportPage
+  router.push({ name: 'report' })
 };
 
 const avatarSize = computed(() => {
@@ -41,13 +58,26 @@ const props = defineProps({
   }
 })
 
+const isLiked = ref(props.comment.isLiked)
+// const likeCount = ref(props.comment.likeCount)
+const likeCount = ref(111)
+
+
 // 方法：切换点赞状态
 const toggleLike = async () => {
   try {
+    showSuccessToast({
+      message: isLiked.value ? '已取消赞' : '已点赞',
+      duration: 500
+    })
+    isLiked.value = !isLiked.value;
+    likeCount.value += isLiked.value ? 1 : -1;
 
-    showSuccessToast(props.comment.isLiked ? '已点赞' : '已取消赞')
   } catch (error) {
-    showFailToast('操作失败，请稍后重试')
+    showFailToast({
+      message: '点赞失败',
+      duration: 500
+    })
     console.error('点赞失败:', error)
   }
 }

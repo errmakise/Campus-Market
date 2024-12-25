@@ -120,7 +120,7 @@ export const getTasks = async (typeId, pageNo, pageSize) => {
 }
 
 // 获取商品列表
-export const getItems = async (typeId, pageNo, pageSize) => {
+export const getItems = async (pageNo, pageSize, typeId) => {
   try {
     console.log('开始获取商品')
     const response = await getPosts(1, typeId, pageNo, pageSize)
@@ -143,6 +143,34 @@ export const getCommentList = async (postId, pageNo, pageSize) => {
     return response.data.data
   } catch (error) {
     console.error('获取评论失败:', error)
+    throw error
+  }
+}
+
+// 获取附近任务
+export const getNearbyList = async (longitude, latitude, pageNo, pageSize) => {
+  try {
+    console.log('开始获取附近任务')
+    const response = await ins.get('/api/post/post/nearby', {
+      params: { longitude: longitude, latitude: latitude, pageNo: pageNo, pageSize: pageSize },
+    })
+    console.log('获取附近任务成功:', response.data.data)
+    return response.data.data
+  } catch (error) {
+    console.error('获取附近任务失败:', error)
+    throw error
+  }
+}
+
+// 获取附近任务轮播图
+export const getNearbySwipe = async (longitude, latitude) => {
+  try {
+    console.log('开始获取附近任务轮播图')
+    const response = await getNearbyList(longitude, latitude, 1, 5)
+    console.log('获取附近任务成功:', response.list)
+    return response.list
+  } catch (error) {
+    console.error('获取附近任务失败:', error)
     throw error
   }
 }

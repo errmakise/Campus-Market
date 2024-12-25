@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <van-swipe class="content" :autoplay="3000" indicator-color="white">
-        <van-swipe-item class="item" v-for="(task, index) in props.tasks" :key="index" @click="clickTask(item.id)">
+        <van-swipe-item class="item" v-for="(task, index) in props.tasks" :key="index" @click="clickTask(task.postId)">
           <div class="line1">
             <span class="deadLine">截止时间：{{ task.deadLine }} </span>
             <span class="createdAt"> {{ formatDate(task.createdAt) }}</span>
@@ -18,7 +18,7 @@
 
 
             <div class="part2">
-              <span class="reward">酬金: ￥{{ task.reward }}</span>
+              <span class="reward">酬金: ￥{{ task.money ? task.money : 0 }}</span>
               <button class="round-button" @click="handleClick">
                 <img v-if="iconPath" :src="iconPath" alt="icon" class="button-icon"
                   :style="{ height: buttonData.iconSize }" />
@@ -46,6 +46,15 @@ const props = defineProps({
     type: Array,
     required: true,
     default: () => [{
+      postId: 1,
+      deadLine: '2023-07-11T11:50:00.000Z',
+      createdAt: '2023-07-11T11:50:00.000Z',
+      location: '无',
+      distance: '无',
+      reward: 333,
+      title: '无标题11111111111111无标无标题11111111111无标无标题111111无标无标题111111111111'
+    }, {
+      postId: 1,
       deadLine: '2023-07-11T11:50:00.000Z',
       createdAt: '2023-07-11T11:50:00.000Z',
       location: '无',
@@ -110,10 +119,11 @@ const formatDate = (timestamp) => {
   align-items: center;
 }
 
-
-.location {
-  padding-right: 4vw;
+.part1 {
+  gap: 4vw;
 }
+
+.location {}
 
 .title {
   font-size: 16px;

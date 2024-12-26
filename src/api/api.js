@@ -40,11 +40,27 @@ export const getPostDetail = async (postId) => {
     console.log('开始获取帖子详情', postId)
     const response = await ins.get('/api/post/post/${postId}')
     console.log('获取帖子详情成功:', response.data.data)
-    return response.data.data
+    const postDetail = response.data.data
+    handleUrl(postDetail)
+
+    return postDetail
   } catch (error) {
     console.error('获取帖子详情失败:', error)
     throw error
   }
+}
+
+// 处理图片url
+const handleUrl = (postDetail) => {
+   // 检查 picUrl 是否存在且为非空字符串
+   if (postDetail.picUrl && typeof postDetail.picUrl === 'string') {
+    // 将 picUrl 字符串按逗号分隔，并去除每个 URL 的首尾空白字符
+    postDetail.picUrl = postDetail.picUrl.split(',').map(url => url.trim())
+  } else {
+    // 如果 picUrl 不存在或不是字符串，初始化为一个空数组
+    postDetail.picUrl = []
+  }
+  console.log('处理后的图片数组:', postDetail.picUrl)
 }
 
 // 举报
@@ -99,7 +115,11 @@ const getPosts = async (type, typeId, pageNo, pageSize) => {
       params: { type: type, typeId: typeId, pageNo: pageNo, pageSize: pageSize },
     })
     console.log('获取帖子列表成功:', response.data.data)
-    return response.data.data
+    const data = response.data.data;
+    data.list.forEach((item) => {
+      handleUrl(item)
+    })
+    return data
   } catch (error) {
     console.error('获取帖子列表失败:', error)
     throw error

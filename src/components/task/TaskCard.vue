@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <img :src="props.imageUrl" alt="Item Image" class="card-image">
+    <img v-if="props.imageUrl" :src="props.imageUrl" alt="Item Image" class="card-image">
 
     <div class="card-title">{{ props.title }}</div>
     <div class="card-letter" v-if="props.location != ''">

@@ -22,7 +22,7 @@
         <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
           <template #card="{ element }">
             <TaskCard :postId="element.id" :title="element.title" :reward="element.price"
-              :imageUrl="element.imageUrl" />
+              :imageUrl="element.picUrl[0]" />
           </template>
         </WaterfallGrid>
       </van-pull-refresh>
@@ -42,7 +42,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePagination } from "@/utils/usePagination";
-import { getItems, fetchTagOptions, getNearbySwipe } from "@/api/api.js"; // 确保路径正确
+import { getTasks, fetchTagOptions, getNearbySwipe } from "@/api/api.js"; // 确保路径正确
 import { showFailToast, showSuccessToast, Toast } from 'vant'; // 导入 Vant 的 Toast 组件
 
 const router = useRouter();
@@ -68,7 +68,7 @@ const activeTagIndex = ref(0);
 
 // 使用封装的分页逻辑，传入当前类别和选中的标签
 const { items, loading, hasMore, fetchData, refreshItems, currentPage, resetPagination } = usePagination(
-  (page, pageSize) => getItems(page, pageSize, selectedCategory.value),
+  (page, pageSize) => getTasks(page, pageSize, selectedCategory.value),
   10
 );
 //, tagsOptions.value[activeTagIndex.value]?.id
@@ -88,7 +88,7 @@ const handleTabClick = async (typeId) => {
     resetPagination();
     fetchData();
   } catch (error) {
-    Toast.fail('获取标签失败，请稍后重试');
+    showFailToast('获取标签失败，请稍后重试');
   }
 };
 
@@ -128,8 +128,6 @@ const isRefreshing = ref(false);
 const onRefresh = async () => {
   isRefreshing.value = true;
   try {
-    tagsOptions.value = await fetchTagOptions(selectedCategory.value);
-    activeTagIndex.value = 0;
     resetPagination();
     await refreshItems();
     showSuccessToast('刷新成功');
@@ -254,7 +252,7 @@ const handleGeolocationError = (error) => {
 .items {
   width: 100%;
   overflow-y: auto;
-  max-height: 60vh;
+  max-height: 50vh;
   margin-top: 1vh;
 }
 

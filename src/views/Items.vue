@@ -10,7 +10,7 @@
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
         <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
           <template #card="{ element }">
-            <ItemCard :itemId="element.id" :title="element.title" :price="element.price" :imageUrl="element.imageUrl" />
+            <ItemCard :itemId="element.id" :title="element.title" :price="element.price" :imageUrl="element.picUrl[0]" />
           </template>
         </WaterfallGrid>
       </van-pull-refresh>
@@ -47,8 +47,13 @@ const categories = [
   { icon: "others", label: "其他" },
 ];
 
-// 使用封装的分页逻辑
-const { items, loading, hasMore, fetchItems, refreshItems, currentPage } = usePagination(getItems);
+// 使用封装的分页逻辑，传入当前类别和选中的标签
+const { items, loading, hasMore, fetchData, refreshItems, currentPage } = usePagination(
+  (page, pageSize) => getItems(page, pageSize, 0),
+  10
+);
+//, tagsOptions.value[activeTagIndex.value]?.id
+
 
 // 滚动加载防抖
 let debounceTimeout;
@@ -61,7 +66,7 @@ const handleScroll = () => {
     const isBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 10;
     if (isBottom && !loading.value) {
       currentPage.value += 1;
-      fetchItems();
+      fetchData();
     }
   }, 200);
 };
@@ -76,7 +81,7 @@ const onRefresh = async () => {
 
 // 页面加载时初始数据
 onMounted(() => {
-  fetchItems();
+  fetchData();
 });
 </script>
 

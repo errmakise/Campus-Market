@@ -11,6 +11,12 @@ const props = defineProps({
     default: "home",
   },
 })
+
+
+const clickBack = () => {
+  // router.go(-1);
+  window.history.back()
+}
 </script>
 
 <template>
@@ -24,7 +30,7 @@ const props = defineProps({
   </div>
 
   <div v-else class="top">
-    <img class="left-round" src="@/assets/images/left-round.png" alt="left-round" />
+    <img class="left-round" src="@/assets/images/left-round.png" alt="left-round" @click="clickBack" />
     <dix class="search-bar2">
       <input class="search-input" type="text" placeholder="搜索" />
       <img src="@/assets/images/search2.png" style="height: 20px;" />
@@ -55,6 +61,8 @@ const props = defineProps({
 
 .left-round {
   height: 42px;
+  border-radius: 50%;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
 .search-bar2 {

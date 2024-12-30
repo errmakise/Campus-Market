@@ -1,6 +1,6 @@
 <template>
   <div class="grid-container">
-    <div class="category-item" v-for="(category, index) in categories" :key="index">
+    <div class="category-item" v-for="(category, index) in categories" :key="index" @click="handleClick(category.icon)">
       <img :src="getIconPath(category.icon)" alt="icon" class="category-icon" />
       <div class="category-name">{{ category.label }}</div>
     </div>
@@ -8,8 +8,6 @@
 </template>
 
 <script setup>
-// 动态导入所有图标
-const iconPaths = import.meta.glob("@/assets/images/categories/*.png", { eager: true });
 
 // 根据图标名称获取路径
 const getIconPath = (iconName) => {
@@ -24,6 +22,13 @@ defineProps({
     required: true,
   },
 });
+
+const router = useRouter();
+
+const handleClick = (iconName) => {
+  console.log("click", iconName)
+  router.push({ path: `/items/${iconName}` });
+};
 </script>
 
 <style scoped>

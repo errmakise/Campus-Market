@@ -26,7 +26,7 @@
 
     <div class="footer" v-if="showFooter">
       <div class="tags">
-        <span v-for="tag in tags" :key="tag" class="tag">#{{ tag }}</span>
+        <span v-for="tag in tags" :key="tag.tagId" class="tag">#{{ tag.tagName }}</span>
       </div>
       <div class="report-button" @click="clickReport">举报</div>
     </div>

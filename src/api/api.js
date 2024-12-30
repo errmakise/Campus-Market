@@ -52,10 +52,10 @@ export const getPostDetail = async (postId) => {
 
 // 处理图片url
 const handleUrl = (postDetail) => {
-   // 检查 picUrl 是否存在且为非空字符串
-   if (postDetail.picUrl && typeof postDetail.picUrl === 'string') {
+  // 检查 picUrl 是否存在且为非空字符串
+  if (postDetail.picUrl && typeof postDetail.picUrl === 'string') {
     // 将 picUrl 字符串按逗号分隔，并去除每个 URL 的首尾空白字符
-    postDetail.picUrl = postDetail.picUrl.split(',').map(url => url.trim())
+    postDetail.picUrl = postDetail.picUrl.split(',').map((url) => url.trim())
   } else {
     // 如果 picUrl 不存在或不是字符串，初始化为一个空数组
     postDetail.picUrl = []
@@ -109,21 +109,14 @@ export const postComment = async (postId, content, root, parentId = '', replyId 
 
 // 获取帖子通用方法
 const getPosts = async (type, typeId, pageNo, pageSize) => {
-  try {
-    console.log('开始获取帖子列表')
-    const response = await ins.get('/api/post/post', {
-      params: { type: type, typeId: typeId, pageNo: pageNo, pageSize: pageSize },
-    })
-    console.log('获取帖子列表成功:', response.data.data)
-    const data = response.data.data;
-    data.list.forEach((item) => {
-      handleUrl(item)
-    })
-    return data
-  } catch (error) {
-    console.error('获取帖子列表失败:', error)
-    throw error
-  }
+  const response = await ins.get('/api/post/post', {
+    params: { type: type, typeId: typeId, pageNo: pageNo, pageSize: pageSize },
+  })
+  const data = response.data.data
+  data.list.forEach((item) => {
+    handleUrl(item)
+  })
+  return data
 }
 
 // 获取任务列表
@@ -191,6 +184,51 @@ export const getNearbySwipe = async (longitude, latitude) => {
     return response.list
   } catch (error) {
     console.error('获取附近任务失败:', error)
+    throw error
+  }
+}
+
+// 获取关注列表
+export const getFollowList = async () => {
+  try {
+    console.log('开始获取关注列表')
+    const response = await ins.get('/api/social/follow')
+    console.log('获取关注列表成功:', response.data.data)
+    return response.data.data
+  } catch (error) {
+    console.error('获取关注列表失败:', error)
+    throw error
+  }
+}
+
+import { useFollowStore } from '@/stores/followStore'
+const followStore = useFollowStore()
+
+// 关注/取消关注
+export const toggleFollow = async (userId, isFollowing) => {
+  try {
+    console.log('开始关注/取消关注', userId, isFollowing)
+    const response = await ins.post('/api/social/follow/{userId}')
+    console.log('关注/取消关注成功:', response.data.data)
+    followStore.setFollowStatus(userId, !isFollowing)
+    return response.data.data
+  } catch (error) {
+    console.error('关注/取消关注失败:', error)
+    throw error
+  }
+}
+
+// 获取用户收到的评价
+export const getUserComments = async (userId, pageNo, pageSize) => {
+  try {
+    console.log('开始获取用户收到的评论,userId', userId)
+    const response = await ins.get('/api/order/comment', {
+      params: { userId: userId },
+    })
+    console.log('获取收到的评论成功:', response.data.data)
+    return response.data.data
+  } catch (error) {
+    console.error('获取收到的评论失败:', error)
     throw error
   }
 }

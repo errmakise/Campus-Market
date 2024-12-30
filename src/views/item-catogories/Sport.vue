@@ -2,7 +2,7 @@
   <div class="back"></div>
 
   <div class="container">
-    <TopBar title="其他" :isEllipsis="false" />
+    <TopBar title="运动用品" :isEllipsis="false" />
 
     <SearchBar />
 

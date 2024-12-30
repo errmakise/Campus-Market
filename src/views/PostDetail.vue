@@ -4,23 +4,8 @@
 
     <div class="post">
       <div class="part">
-        <div class="publisher">
-          <div class="left-part" @click="handleClickPublisher">
-            <Avatar :src="postDetail.avatarUrl" size="5vh" />
-
-            <div class="publisher-info">
-              <div class="publisher-name">{{ postDetail.username }}</div>
-              <div class="publisher-time">
-                {{ formattedTime }}
-              </div>
-            </div>
-          </div>
-
-          <button class="follow-button" :style="buttonStyle" @click="handleFollowClick">
-            <img src="@/assets/images/follow.png" alt="icon" class="button-icon" />
-            <span>关注</span>
-          </button>
-        </div>
+        <UserCard :avatarUrl="postDetail.avatarUrl" :username="postDetail.username" :userId="postDetail.userId"
+          :createTime="postDetail.createTime" type="post" />
 
         <div class="divider"></div>
         <PostContent :deadline="postDetail.deadline" :reward="postDetail.money" :address="postDetail.address"
@@ -39,7 +24,7 @@
 
         <!-- 评论列表 -->
         <div class="comment-list">
-          <PostCommentCard v-for="cmt in paginatedComments.items.value" :key="cmt.id" :comment="cmt" />
+          <PostCommentCard v-for="cmt in limitedComments" :key="cmt.id" :comment="cmt" />
         </div>
 
         <div class="show-comment">
@@ -48,7 +33,7 @@
         </div>
       </div>
 
-      <div class="part" style="margin-bottom: 10vh">
+      <div class="part">
         <div style="font-size: 16px; display: flex; justify-content: center">为你推荐</div>
       </div>
     </div>
@@ -72,16 +57,14 @@
 
 <script setup>
 
-import { formatTime } from '@/utils/timeFormatter'
+
 import { usePagination } from '@/utils/usePagination.js'
-import { getPostDetail, postComment, getCommentList } from '@/api/api.js'
+import { getPostDetail, postComment, getCommentList, getFollowList } from '@/api/api.js'
 import { useReportStore } from '@/stores/report'
 
 const reportStore = useReportStore()
 
 const userAvator = ref('https://img.yzcdn.cn/vant/cat.jpeg');
-const formattedTime = computed(() =>
-  formatTime(postDetail.value.createTime));
 
 const router = useRouter()
 const route = useRoute()
@@ -90,8 +73,8 @@ const postType = ref(route.params.postType);
 const postDetail = ref({})
 
 
+//#region 评论
 const paginatedComments = usePagination(getCommentList, 10) // 每页加载10条评论
-
 
 const commentInput = ref('') // 用于弹出层的评论输入
 const comment = ref('') // 用于发布评论输入框，readonly
@@ -100,6 +83,27 @@ const commentRoot = ref(0) // 0表示一级评论，1表示二级评论
 const commentParentId = ref() // 上级评论的id
 const commentReplyId = ref() // 上级评论发布者的id
 const commentTextarea = ref(null) // 引用 textarea 元素
+
+// 定义要显示的评论总数量上限
+const commentsLimit = ref(6)
+
+// 计算要显示的评论
+const limitedComments = computed(() => {
+  const limited = []
+  let count = 0
+  const limit = commentsLimit.value
+  for (const parent of paginatedComments.items.value) {
+    if (parent.commentList.length + count + 1 > limit) {
+      parent.commentList = parent.commentList.slice(0, limit - count - 1);
+    }
+    limited.push(parent)
+    count += parent.commentList.length + 1;
+    if (count >= limit) {
+      break
+    }
+  }
+  return limited
+})
 
 // 点击发布一级评论
 const clickPublishTopComment = () => {
@@ -121,10 +125,8 @@ watch(showPublishComment, (newVal) => {
   }
 })
 
-
 // 提交评论
 const submitComment = () => {
-
   if (commentInput.value.trim().length === 0) {
     showFailToast('请输入评论内容!')
     console.log('评论内容为空');
@@ -143,6 +145,11 @@ const submitComment = () => {
     showFailToast('评论提交失败');
   }
 }
+//#endregion
+
+
+
+
 
 
 // 点击举报按钮
@@ -164,36 +171,42 @@ const clickPostReport = () => {
   router.push({ name: 'report' })
 }
 
-// 点击发布者
-const handleClickPublisher = () => {
 
-  console.log('点击发布者');
-  router.push({
-    name: 'userDetail',
-    params: { userId: postDetail.value.userId },
-  });
-}
 
-const c = ref({})
 onMounted(() => {
   console.log('postId:', route.params.postId);
 
   try {
+    fetchFollowers();// 初始化关注者列表。登录页完善后，转移至登录页
     getPostDetail(postId).then((response) => {
       postDetail.value = response;
     })
     paginatedComments.fetchData(postId).then((response) => {
-      c.value = paginatedComments.items.value[0]
-      console.log('评论列表:', c.value);
+      console.log('评论列表:', paginatedComments.items.value);
     })
   } catch (error) {
     console.log('加载信息失败', error);
   }
 })
 
-const handleFollowClick = () => {
-  console.log('点击关注按钮');
-}
+
+
+const userStore = useUserStore();
+import { useUserStore } from '@/stores/userStore';
+// 初始化关注者列表。登录页完善后，转移至登录页
+const fetchFollowers = async () => {
+  try {
+    const response = await getFollowList();
+    userStore.setBatchFollowStatus(response.list.map(user => ({
+      userId: user.userId,
+      isFollowing: true // 全部关注列表中的用户都是已关注
+    })));
+  } catch (error) {
+    console.error('获取关注者列表失败:', error);
+  }
+};
+
+
 </script>
 
 <style scoped>
@@ -256,10 +269,9 @@ const handleFollowClick = () => {
 }
 
 .post {
-  height: 81.5;
   width: 100%;
   margin-top: 9.5vh;
-  margin-bottom: 9vh;
+  margin-bottom: 12vh;
   display: flex;
   flex-direction: column;
 
@@ -381,44 +393,8 @@ const handleFollowClick = () => {
   border: 1px solid rgb(253, 253, 253);
 }
 
-.left-part {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
-.follow-button {
-  border-radius: 20px;
-  border: none;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 12px;
-}
 
-.button-icon {
-  height: 14px;
-  margin-right: 5px;
-}
-
-.publisher-time {
-  font-size: 12px;
-  color: rgba(110, 109, 109, 1);
-  margin-top: 3px;
-}
-
-.publisher-info {
-  margin-left: 3vw;
-  font-size: 14px;
-  font-family: 'ali', sans-serif;
-}
-
-.publisher {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 
 
 

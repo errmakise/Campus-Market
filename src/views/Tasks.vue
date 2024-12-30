@@ -282,7 +282,8 @@ const handleGeolocationError = (error) => {
   padding-top: 3vh;
   align-items: center;
   overflow-x: hidden;
-
+  font-size: 14px;
+  font-family: 'ali', sans-serif;
 }
 
 .loading-indicator {

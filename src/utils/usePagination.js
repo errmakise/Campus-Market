@@ -18,13 +18,12 @@ export const usePagination = (apiFunction, pageSize = 10) => {
     try {
       // 调用API函数，传入当前时间戳、页码、每页大小及其他参数
       const response = await apiFunction(currentPage.value, pageSize, ...args)
-      console.log(response.list)
       if (response.list && response.list.length) {
         items.value = [...items.value, ...response.list]
+        currentPage.value++ // 自动递增页码
       } else {
         hasMore.value = false // 没有更多数据
       }
-      console.log(items.value)
     } catch (error) {
       console.error('Error fetching items:', error)
     } finally {

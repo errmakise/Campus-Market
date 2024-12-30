@@ -85,8 +85,6 @@ const toggleLike = async () => {
 
 
 onMounted(() => {
-  // 初始化时检查是否已点赞
-  console.log("card:", props.comment)
 })
 </script>
 

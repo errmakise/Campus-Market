@@ -1,59 +1,45 @@
 <template>
   <div class="card-container">
     <div class="line">
-      <avatar :src="avatarUrl" size="5vh" class="avatar" />
-      <span class="name">{{ userName }}</span>
+      <avatar :src="comment.userAvatarUrl" size="5vh" class="avatar" />
+      <span class="name">{{ comment.username }}</span>
     </div>
 
-    <span class="comment">{{ commentText }}</span>
+    <span class="comment">{{ comment.content }}</span>
 
-    <span class="time">{{ commentTime }}</span>
+    <span class="time">{{ comment.createTime }}</span>
 
   </div>
 </template>
 
 <script setup>
-const props=defineProps({
-  avatarUrl:{
-    type:String,
-    required:true,
-    default:'https://img.yzcdn.cn/vant/cat.jpeg'
-  },
-  userName:{
-    type:String,
-    required:true,
-    default:'用户'
-  },
-  commentText:{
-    type:String,
-    required:true,
-    default:'评论内容'
-  },
-  commentTime:{
-    type:String,
-    required:true,
-    default:'2024.1.1'
+const props = defineProps({
+  comment: {
+    type: Object,
   }
 })
 </script>
 
 <style scoped>
-.time{
+.time {
   color: #6c6c6c;
 }
-.name{
-color: #6c6c6c;
-margin-left: 2vw;
+
+.name {
+  color: #6c6c6c;
+  margin-left: 2vw;
 }
-.line{
+
+.line {
   display: flex;
   align-items: center;
 }
-.card-container{
+
+.card-container {
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding:0vh 7.5vw;
+  padding: 0vh 6vw;
   font-family: "ali", sans-serif;
   font-size: 14px;
   height: 11vh;

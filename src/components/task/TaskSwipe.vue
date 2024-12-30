@@ -2,10 +2,11 @@
   <div>
     <div class="container">
       <van-swipe class="content" :autoplay="3000" indicator-color="white">
-        <van-swipe-item class="item" v-for="(task, index) in props.tasks" :key="index" @click="clickTask(task.postId)">
+        <van-swipe-item class="item" v-for="(task, index) in props.tasks" :key="index" @click="clickTask(task.id)">
           <div class="line1">
-            <span class="deadLine">截止时间：{{ task.deadLine }} </span>
-            <span class="createdAt"> {{ formatDate(task.createdAt) }}</span>
+            <span class="deadLine">截止时间：{{ task.deadline ? task.deadline : '无' }} </span>
+            <span class="createdAt"> {{ formatDate(task.createTime
+            ) }}</span>
           </div>
 
           <div class="title">{{ task.title }}</div>
@@ -18,10 +19,8 @@
 
 
             <div class="part2">
-              <span class="reward">酬金: ￥{{ task.money ? task.money : 0 }}</span>
+              <span class="reward">酬金: ￥{{ task.price ? task.price : 0 }}</span>
               <button class="round-button" @click="handleClick">
-                <img v-if="iconPath" :src="iconPath" alt="icon" class="button-icon"
-                  :style="{ height: buttonData.iconSize }" />
                 <span>接单</span>
               </button>
             </div>
@@ -38,6 +37,7 @@
 
 const router = useRouter();
 const clickTask = (id) => {
+  console.log("点击轮播图卡片,id:", id)
   router.push({ name: 'post', params: { postId: id, postType: 0 } })
 }
 

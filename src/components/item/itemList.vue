@@ -17,9 +17,10 @@
     <div class="waterfall-wrapper" :style="{ maxHeight: `calc(${viewHeight}vh - 10vh)` }" @scroll="handleScroll"
       ref="masonryContainer">
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
-        <WaterfallGrid :items="items" :number-of-columns="2" :loading="loading">
-          <template #card="{ item }">
-            <ItemCard :itemId="item.itemId" :title="item.title" :price="item.price" :imageUrl="item.imageUrl" />
+        <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
+          <template #card="{ element }">
+            <ItemCard :itemId="element.id" :title="element.title" :price="element.price"
+              :imageUrl="element.picUrl[0]" />
           </template>
         </WaterfallGrid>
       </van-pull-refresh>
@@ -57,7 +58,12 @@ const isRefreshing = ref(false);
 const masonryContainer = ref(null); // 滑动容器引用
 
 // 使用封装的分页逻辑
-const { items, loading, hasMore, fetchItems, refreshItems, currentPage } = usePagination(getItems, { sort: "price" });
+const { items, loading, hasMore, fetchData, refreshItems, currentPage } = usePagination(
+  (page, pageSize) => getItems(page, pageSize, 0),
+  10
+);
+//, tagsOptions.value[activeTagIndex.value]?.id
+
 
 // 获取排序图标
 const getIconUrl = (nowIndex) => {
@@ -85,7 +91,7 @@ const handleScroll = () => {
     const isBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 10;
     if (isBottom && !loading.value) {
       currentPage.value += 1;
-      fetchItems({ sort: activeIndex.value === 0 ? "price" : "time" });
+      fetchData({ sort: activeIndex.value === 0 ? "price" : "time" });
     }
   }, 200);
 };
@@ -100,7 +106,7 @@ const onRefresh = async () => {
 
 // 页面加载时初始化数据
 onMounted(() => {
-  fetchItems({ sort: "price" });
+  fetchData({ sort: "price" });
 });
 </script>
 

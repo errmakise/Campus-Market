@@ -37,6 +37,7 @@ const handleClickCard = () => {
     name: 'post', params: { postType: '0', postId: props.postId },
   });
 };
+
 // 点击接单按钮
 const handleAcceptClick = async () => {
   console.log('点击接单按钮');
@@ -176,7 +177,7 @@ const props = defineProps({
   flex-direction: column;
 
   margin-bottom: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 </style>

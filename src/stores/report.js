@@ -1,5 +1,5 @@
 // src/stores/report.js
-
+// 0用户举报 1帖子举报 2评论举报
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { postReport } from '@/api/api.js'

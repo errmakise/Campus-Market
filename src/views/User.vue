@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="user">
-      <avatar :src="avatarUrl" size="10vh" />
+      <avatar :src="userInfo.avatarUrl" size="10vh" @click="toUserDetail" />
 
       <div class="user-text">
-        <div class="user-name">
-          {{ userName }}
+        <div class="user-name" @click="toUserDetail">
+          {{ userInfo.username }}
           <img src="@/assets/images/right.png" class="right" />
         </div>
 
@@ -15,13 +15,13 @@
             <span>修改资料</span>
           </button>
 
-          <div class="follow-and-star">
-            {{ followNumber }}
+          <div class="follow-and-star" @click="clickFollowList">
+            {{ userInfo.followCount }}
             <span style="font-weight: 600;">关注</span>
           </div>
 
-          <div class="follow-and-star">
-            {{ starNumber }}
+          <div class="follow-and-star" @click="clickStarList">
+            {{ userInfo.starCount }}
             <span style="font-weight: 600;">收藏</span>
           </div>
 
@@ -110,10 +110,31 @@
 
 
 <script setup>
-const avatarUrl = ref('https://img.yzcdn.cn/vant/cat.jpeg');
-const userName = ref('用户名');
-const followNumber = ref(100);
-const starNumber = ref(210);
+import { useUserStore } from '@/stores/userStore';
+const router = useRouter();
+
+const userInfo = useUserStore().userInfo;
+onMounted(() => {
+  console.log('userInfo:', userInfo);
+});
+
+// 点击关注列表
+const clickFollowList = () => {
+  console.log('点击了关注列表');
+  router.push({ name: 'followList' });
+}
+
+// 点击收藏列表
+const clickStarList = () => {
+  console.log('点击了收藏列表');
+  router.push({ name: 'starList' });
+}
+
+
+
+const toUserDetail = () => {
+  router.push({ name: 'userDetail', params: { userId: userInfo.userId } });
+}
 </script>
 
 <style scoped>

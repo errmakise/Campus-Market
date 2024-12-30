@@ -10,7 +10,8 @@
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
         <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
           <template #card="{ element }">
-            <ItemCard :itemId="element.id" :title="element.title" :price="element.price" :imageUrl="element.picUrl[0]" />
+            <ItemCard :itemId="element.id" :title="element.title" :price="element.price"
+              :imageUrl="element.picUrl[0]" />
           </template>
         </WaterfallGrid>
       </van-pull-refresh>

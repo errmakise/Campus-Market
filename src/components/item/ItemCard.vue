@@ -1,5 +1,5 @@
 <template>
-  <div class="card-container">
+  <div class="card-container" @click="handleClickCard">
     <div class="card-tags">
       <div class="card-tag" v-for="tag in props.tags" :key="tag">
         #{{ tag }}
@@ -20,6 +20,15 @@
 </template>
 
 <script setup>
+const router = useRouter();
+const handleClickCard = () => {
+  console.log('点击卡片,id', props.itemId);
+  router.push({
+    name: 'post', params: { postType: '0', postId: props.itemId },
+  });
+};
+
+// 格式化时间
 const formattedTime = computed(() => {
   if (!props.createdAt) return '未知时间';
 
@@ -136,7 +145,7 @@ const props = defineProps({
 
 
   margin-bottom: 8px;
-  box-shadow: 0px 2px 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 </style>

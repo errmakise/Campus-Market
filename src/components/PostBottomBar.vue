@@ -58,12 +58,12 @@ const props = defineProps({
     default: 'post',
   },
   commentCount: {
-    type: String,
-    default: '100',
+    type: Number,
+    default: 100,
   },
   favouriteCount: {
-    type: String,
-    default: '100',
+    type: Number,
+    default: 100,
   },
   isLiked: {
     type: Boolean,
@@ -74,8 +74,8 @@ const props = defineProps({
     default: false,
   },
   likeCount: {
-    type: String,
-    default: '100',
+    type: Number,
+    default: 100,
   },
 })
 

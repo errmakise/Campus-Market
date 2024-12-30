@@ -84,14 +84,19 @@ const router = createRouter({
       component: () => import('../views/item-catogories/Fashion.vue'),
     },
     {
+      path: '/items/account',
+      name: 'accounts',
+      component: () => import('../views/item-catogories/Account.vue'),
+    },
+    {
       path: '/items/food',
       name: 'food',
       component: () => import('../views/item-catogories/Food.vue'),
     },
     {
-      path: '/items/games',
+      path: '/items/game',
       name: 'games',
-      component: () => import('../views/item-catogories/Games.vue'),
+      component: () => import('../views/item-catogories/Game.vue'),
     },
     {
       path: '/items/others',
@@ -104,9 +109,9 @@ const router = createRouter({
       component: () => import('../views/item-catogories/Instrument.vue'),
     },
     {
-      path: '/items/sports',
+      path: '/items/sport',
       name: 'sports',
-      component: () => import('../views/item-catogories/Sports.vue'),
+      component: () => import('../views/item-catogories/Sport.vue'),
     },
     {
       path: '/items/study',
@@ -114,9 +119,9 @@ const router = createRouter({
       component: () => import('../views/item-catogories/Study.vue'),
     },
     {
-      path: '/items/tickets',
+      path: '/items/ticket',
       name: 'tickets',
-      component: () => import('../views/item-catogories/Tickets.vue'),
+      component: () => import('../views/item-catogories/Ticket.vue'),
     },
     {
       path: '/messages',
@@ -127,6 +132,16 @@ const router = createRouter({
       path: '/user',
       name: 'user',
       component: () => import('../views/User.vue'),
+    },
+    {
+      path: '/user/followList',
+      name: 'followList',
+      component: () => import('../views/FollowList.vue'),
+    },
+    {
+      path: '/user/starList',
+      name: 'starList',
+      component: () => import('../views/StarList.vue'),
     },
   ],
 })

@@ -130,6 +130,8 @@ const props = defineProps({
 .left-round {
   height: 5vh;
   margin-right: 3vw;
+  box-shadow: 0 6px 6px rgba(138, 136, 136, 0.589);
+  border-radius: 50%;
 }
 
 .title {

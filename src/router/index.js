@@ -49,11 +49,6 @@ const router = createRouter({
       component: () => import('../views/Login.vue'),
     },
     {
-      path: '/interaction',
-      name: 'interaction',
-      component: () => import('../views/Interaction.vue'),
-    },
-    {
       path: '/post/:postType/:postId',
       name: 'post',
       component: () => import('../views/PostDetail.vue'),
@@ -68,11 +63,61 @@ const router = createRouter({
       name: 'items',
       component: () => import('../views/Items.vue'),
     },
+
     {
-      path: '/publishedTasks',
-      name: 'publishedTasks',
-      component: () => import('../views/PublishedTasks.vue'),
+      path: '/messages',
+      name: 'messages',
+      component: () => import('../views/Messages.vue'),
     },
+    {
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/User.vue'),
+    },
+    //#region 用户页跳转
+    {
+      path: '/user/postedTasks',
+      name: 'postedTasks',
+      component: () => import('../views/user-router/PostedTasks.vue'),
+    },
+    {
+      path: '/user/acceptedTasks',
+      name: 'acceptedTasks',
+      component: () => import('../views/user-router/AcceptedTasks.vue'),
+    },
+    {
+      path: '/user/postedItems',
+      name: 'postedItems',
+      component: () => import('../views/user-router/PostedItems.vue'),
+    },
+    {
+      path: '/user/soldItems',
+      name: 'soldItems',
+      component: () => import('../views/user-router/SoldItems.vue'),
+    },
+    {
+      path: '/user/manageAddress',
+      name: 'manageAddress',
+      component: () => import('../views/user-router/ManageAddress.vue'),
+    },
+    {
+      path: '/user/socialHistory',
+      name: 'socialHistory',
+      component: () => import('../views/user-router/SocialHistory.vue'),
+    },
+    {
+      path: '/user/followList',
+      name: 'followList',
+      component: () => import('../views/user-router/FollowList.vue'),
+    },
+    {
+      path: '/user/starList',
+      name: 'starList',
+      component: () => import('../views/user-router/StarList.vue'),
+    },
+    // #endregion
+
+    // #region 物品分类
     {
       path: '/items/digital',
       name: 'digital',
@@ -123,26 +168,8 @@ const router = createRouter({
       name: 'tickets',
       component: () => import('../views/item-catogories/Ticket.vue'),
     },
-    {
-      path: '/messages',
-      name: 'messages',
-      component: () => import('../views/Messages.vue'),
-    },
-    {
-      path: '/user',
-      name: 'user',
-      component: () => import('../views/User.vue'),
-    },
-    {
-      path: '/user/followList',
-      name: 'followList',
-      component: () => import('../views/FollowList.vue'),
-    },
-    {
-      path: '/user/starList',
-      name: 'starList',
-      component: () => import('../views/StarList.vue'),
-    },
+
+    // #endregion
   ],
 })
 

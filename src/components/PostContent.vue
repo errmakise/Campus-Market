@@ -1,24 +1,29 @@
 <template>
   <div>
     <div class="post-text">
-      <span class="label">截止时间：</span>
-      <span class="value">{{ deadline }}</span>
-    </div>
-
-    <div class="post-text">
-      <span class="label">酬金：</span>
+      <span class="label">金额：</span>
       <span class="value">￥{{ reward }}</span>
     </div>
 
     <div class="post-text">
-      <span class="label">任务地点：</span>
-      <span class="value">{{ address }}</span>
-    </div>
-
-    <div class="post-text">
-      <span class="label">委托详情：</span>
+      <span class="label">详情：</span>
       <span class="value">{{ content }}</span>
     </div>
+
+    <div v-if="props.type == 0">
+      <div class="post-text">
+        <span class="label">截止时间：</span>
+        <span class="value">{{ deadline }}</span>
+      </div>
+
+      <div class="post-text">
+        <span class="label">任务地点：</span>
+        <span class="value">{{ address }}</span>
+      </div>
+    </div>
+
+
+
 
     <div class="image-gallery">
       <img v-for="(image, index) in images" :key="index" :src="image" class="gallery-image" />
@@ -51,6 +56,10 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  type: Number,
+});
+
+onMounted(() => {
 });
 </script>
 

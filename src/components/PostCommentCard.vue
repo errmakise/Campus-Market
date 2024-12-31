@@ -59,8 +59,8 @@ const props = defineProps({
 })
 
 const isLiked = ref(props.comment.isLiked)
-// const likeCount = ref(props.comment.likeCount)
-const likeCount = ref(111)
+const likeCount = ref(props.comment.likeCount)
+
 
 
 // 方法：切换点赞状态

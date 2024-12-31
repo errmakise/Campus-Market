@@ -16,13 +16,13 @@
     <!-- 标签选择栏 -->
     <TasksTagsBar class="tagsBar" :options="tagsOptions" :activeIndex="activeTagIndex" @tabClick="handleTagClick" />
 
-    <!-- 商品瀑布流列表 -->
+    <!-- 瀑布流列表 -->
     <div class="items" @scroll="handleScroll" ref="masonryContainer">
       <van-pull-refresh v-model="isRefreshing" @refresh="onRefresh">
         <WaterfallGrid :elements="items" :number-of-columns="2" :loading="loading">
           <template #card="{ element }">
-            <TaskCard :postId="element.id" :title="element.title" :reward="element.price"
-              :imageUrl="element.picUrl[0]" />
+            <TaskCard :postId="element.id" :title="element.title" :reward="element.price" :imageUrl="element.picUrl[0]"
+              :deadline="element.deadline" />
           </template>
         </WaterfallGrid>
       </van-pull-refresh>
@@ -43,7 +43,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePagination } from "@/utils/usePagination";
 import { getTasks, fetchTagOptions, getNearbySwipe } from "@/api/api.js"; // 确保路径正确
-import { showFailToast, showSuccessToast, Toast } from 'vant'; // 导入 Vant 的 Toast 组件
+
 
 const router = useRouter();
 

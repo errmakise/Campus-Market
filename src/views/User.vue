@@ -34,46 +34,35 @@
     </div>
 
 
-    <div class="card" style="height: 25vh;">
+    <div class="card" style="height: 20vh;">
       <div class="card-title">
         <img src="@/assets/images/task-user.png" class="card-icon">
         <span class="title-text">悬赏</span>
       </div>
 
-      <div class="card-line">
+      <div class="card-line" @click="clickPostedTasks">
         <span>我发布的</span>
         <img src="@/assets/images/right.png" class="right" />
       </div>
 
-      <div class="card-line">
+      <div class="card-line" @click="clickAcceptedTsks">
         <span>我接取的</span>
         <img src="@/assets/images/right.png" class="right" />
       </div>
-
-      <div class="card-line">
-        <span>已被接收</span>
-        <img src="@/assets/images/right.png" class="right" />
-      </div>
-
     </div>
 
-    <div class="card" style="height: 25vh;">
+    <div class="card" style="height: 20vh;">
       <div class="card-title">
         <img src="@/assets/images/item-user.png" class="card-icon">
         <span class="title-text">二手</span>
       </div>
 
-      <div class="card-line">
+      <div class="card-line" @click="clickPostedItems">
         <span>我发布的</span>
         <img src="@/assets/images/right.png" class="right" />
       </div>
 
-      <div class="card-line">
-        <span>我卖出的</span>
-        <img src="@/assets/images/right.png" class="right" />
-      </div>
-
-      <div class="card-line">
+      <div class="card-line" @click="clickSoldItems">
         <span>我买到的</span>
         <img src="@/assets/images/right.png" class="right" />
       </div>
@@ -86,12 +75,12 @@
         <span class="title-text">其他</span>
       </div>
 
-      <div class="card-line">
+      <div class="card-line" @click="clickManageAddress">
         <span>地址管理</span>
         <img src="@/assets/images/right.png" class="right" />
       </div>
 
-      <div class="card-line">
+      <div class="card-line" @click="clickSocialHistory">
         <span>互动记录</span>
         <img src="@/assets/images/right.png" class="right" />
       </div>
@@ -118,6 +107,30 @@ onMounted(() => {
   console.log('userInfo:', userInfo);
 });
 
+const clickPostedTasks = () => {
+  console.log('点击发布的悬赏');
+  router.push({ name: 'postedTasks' });
+}
+const clickAcceptedTsks = () => {
+  console.log('点击了我接取的');
+  router.push({ name: 'acceptedTasks' });
+}
+const clickPostedItems = () => {
+  console.log('点击发布的二手');
+  router.push({ name: 'postedItems' });
+}
+const clickSoldItems = () => {
+  console.log('点击了我买到的');
+  router.push({ name: 'soldItems' });
+}
+const clickManageAddress = () => {
+  console.log('点击了地址管理');
+  router.push({ name: 'manageAddress' });
+}
+const clickSocialHistory = () => {
+  console.log('点击了互动记录');
+  router.push({ name: 'socialHistory' });
+}
 // 点击关注列表
 const clickFollowList = () => {
   console.log('点击了关注列表');
@@ -162,7 +175,7 @@ const toUserDetail = () => {
   background-color: white;
   width: 100%;
   border-radius: 20px;
-  margin-top: 1vh;
+  margin-top: 2vh;
   padding: 1.5vh 2vw;
   display: flex;
   flex-direction: column;

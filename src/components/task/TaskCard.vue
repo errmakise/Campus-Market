@@ -13,7 +13,7 @@
       {{ props.location }}
       {{ distance }}
     </div>
-    <span class="card-letter">截止时间：{{ props.deadLine }}</span>
+    <span class="card-letter">截止时间：{{ props.deadline }}</span>
     <div class="card-letter">{{ formattedTime }}</div>
     <div class="card-bottom">
       <span class="card-price">酬金:￥{{ props.reward }}</span>
@@ -34,7 +34,7 @@ const router = useRouter();
 const handleClickCard = () => {
   console.log('点击卡片');
   router.push({
-    name: 'post', params: { postType: '0', postId: props.postId },
+    name: 'post', params: { postType: 0, postId: props.postId },
   });
 };
 
@@ -88,7 +88,7 @@ const props = defineProps({
   // 默认值为数组时，应该使用函数返回一个新数组，否则多个实例会共享同一个数组。
   tags: { type: Array, default: () => ['无', '无', '无'] },
   reward: { type: Number, default: 333 },
-  deadLine: { type: String, default: '2023-07-11T11:50:00.000Z' },
+  deadline: { type: String, default: '2023-07-11T11:50:00.000Z' },
   location: { type: String, default: '' },
   distance: { type: Number, default: 0 },
 });

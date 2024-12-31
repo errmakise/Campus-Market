@@ -10,7 +10,7 @@
         <div class="divider"></div>
         <PostContent :deadline="postDetail.deadline" :reward="postDetail.money" :address="postDetail.address"
           :content="postDetail.content" :images="postDetail.picUrl" :tags="postDetail.tags"
-          @click-report="clickPostReport" />
+          @click-report="clickPostReport" :type="postType" />
       </div>
 
       <div class="part">
@@ -127,6 +127,7 @@ watch(showPublishComment, (newVal) => {
 
 // 提交评论
 const submitComment = () => {
+
   if (commentInput.value.trim().length === 0) {
     showFailToast('请输入评论内容!')
     console.log('评论内容为空');
@@ -175,7 +176,7 @@ const clickPostReport = () => {
 
 onMounted(() => {
   console.log('postId:', route.params.postId);
-
+  console.log('postType:', route.params.postType);
   try {
     fetchFollowers();// 初始化关注者列表。登录页完善后，转移至登录页
     getPostDetail(postId).then((response) => {

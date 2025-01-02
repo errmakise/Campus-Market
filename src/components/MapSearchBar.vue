@@ -1,7 +1,7 @@
 <template>
   <div class="search-container">
     <div class="search-bar">
-      <img src="@/assets/images/left-round.png" alt="搜索" class="search-icon" />
+      <img src="@/assets/images/left-round.png" alt="搜索" class="search-icon" @click="clickBack" />
       <input type="text" v-model="searchQuery" @input="onSearchInput" placeholder="搜索地点" class="search-input"
         ref="searchInput" />
     </div>
@@ -19,6 +19,10 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+const clickBack = () => {
+  window.history.back()
+}
 
 // 定义组件的 props
 const props = defineProps({
@@ -49,15 +53,30 @@ const maxSuggestions = 5 // 设置最大提示条数
 // 处理 AutoComplete 完成事件
 const handleAutoCompleteComplete = (data) => {
   console.log("搜索完成", data.tips)
-  if (data) {
-    data.tips = data.tips.slice(0, maxSuggestions)
-    mapResults.value = data.tips.map((tip) => ({
-      id: `map-tip.id`,
-      name: tip.name,
-      location: tip.location, // { lng: 经度, lat: 纬度 }
-      type: 'map',
-    }));
+  if (data && data.tips) {
+    // 截取最大建议数
+    data.tips = data.tips.slice(0, maxSuggestions);
+
+    // 遍历并映射搜索结果
+    mapResults.value = data.tips.map((tip) => {
+      if (tip.location) {
+        // 如果 location 存在，则返回经纬度信息
+        return {
+          id: `map-tip.id`, // 注意 ID 的生成逻辑是否正确
+          name: tip.name,
+          longitude: tip.location.lng,
+          latitude: tip.location.lat,
+          type: 'map',
+        };
+      } else {
+        // 如果 location 不存在，则跳过或返回默认值
+        console.warn("搜索结果缺少 location 属性", tip);
+        return null;
+      }
+    }).filter(item => item !== null); // 过滤掉返回为 null 的项
+
   } else {
+    // 如果 data.tips 不存在，清空结果
     mapResults.value = [];
   }
   console.log("高德地图搜索结果", mapResults.value)
@@ -95,7 +114,8 @@ const onSearchInput = () => {
     .map(marker => ({
       id: marker.id,
       name: marker.name,
-      position: marker.position, // [lng, lat]
+      longitude: marker.longitude, // { lng: 经度, lat: 纬度 }
+      latitude: marker.latitude,
       type: marker.type,
     }));
 
@@ -189,7 +209,7 @@ onBeforeUnmount(() => {
 
 .search-icon {
   height: 4vh;
-  box-shadow: #ccc 0 3px 5px;
+  box-shadow: #a3a3a3 0 5px 10px;
   border-radius: 50%;
 }
 
@@ -200,7 +220,7 @@ onBeforeUnmount(() => {
   border: none;
   border-radius: 10px;
   width: 80vw;
-  box-shadow: #ccc 0 2px 5px;
+  box-shadow: #a3a3a3 0 5px 10px;
   outline: none;
 }
 

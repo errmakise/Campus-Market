@@ -10,7 +10,7 @@
         </div>
 
         <div class="text-line2">
-          <button class="edit-info" @click="handleClick">
+          <button class="edit-info" @click="clickEdit">
             <img src="@/assets/images/edit.png" class="edit-icon" />
             <span>修改资料</span>
           </button>
@@ -101,6 +101,11 @@
 <script setup>
 import { useUserStore } from '@/stores/userStore';
 const router = useRouter();
+
+const clickEdit = () => {
+  console.log('点击了修改资料');
+  router.push({ name: 'information' });
+}
 
 const userInfo = useUserStore().userInfo;
 onMounted(() => {

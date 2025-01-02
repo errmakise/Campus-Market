@@ -60,7 +60,6 @@ const handleUrl = (postDetail) => {
     // 如果 picUrl 不存在或不是字符串，初始化为一个空数组
     postDetail.picUrl = []
   }
-  console.log('处理后的图片数组:', postDetail.picUrl)
 }
 
 // 举报
@@ -107,23 +106,95 @@ export const postComment = async (postId, content, root, parentId = '', replyId 
   }
 }
 
+// 获取最新帖子
+const getLatestPost = async (type, pageNo, pageSize) => {
+  try {
+    console.log('开始获取最新帖子')
+    const response = await ins.get('/api/post/post/latest', {
+      params: { type: type, pageNo: pageNo, pageSize: pageSize },
+    })
+    const data = response.data.data
+    data.list.forEach((item) => {
+      handleUrl(item)
+    })
+    console.log('获取最新帖子成功:', data)
+    return data
+  } catch (error) {
+    console.error('获取最新帖子失败:', error)
+    throw error
+  }
+}
+// 获取最新任务
+export const getLatestTasks = async (pageNo, pageSize) => {
+  try {
+    console.log('开始获取最新任务')
+    const response = await getLatestPost(0, pageNo, pageSize)
+    console.log('获取最新任务成功:', response)
+    return response
+  } catch (error) {
+    console.error('获取最新任务失败:', error)
+    throw error
+  }
+}
+// 获取最新商品
+export const getLatestItems = async (pageNo, pageSize) => {
+  try {
+    console.log('开始获取最新商品')
+    const response = await getLatestPost(1, pageNo, pageSize)
+    console.log('获取最新商品成功:', response)
+    return response
+  } catch (error) {
+    console.error('获取最新商品失败:', error)
+    throw error
+  }
+}
+
 // 获取帖子通用方法
-const getPosts = async (type, typeId, pageNo, pageSize) => {
-  const response = await ins.get('/api/post/post', {
-    params: { type: type, typeId: typeId, pageNo: pageNo, pageSize: pageSize },
-  })
-  const data = response.data.data
-  data.list.forEach((item) => {
-    handleUrl(item)
-  })
-  return data
+const getPosts = async (pageNo, pageSize, tagType, tag, sortByTime, sortByMoney, type) => {
+  console.log(
+    '开始获取帖子 pageNo:',
+    pageNo,
+    'pageSize:',
+    pageSize,
+    'tagType:',
+    tagType,
+    'tag:',
+    tag,
+    'sortByTime:',
+    sortByTime,
+    'sortByMoney:',
+    sortByMoney,
+    'type:',
+    type,
+  )
+  try {
+    const response = await ins.get('/api/post/post', {
+      params: {
+        type: type,
+        tag: tag,
+        tagType: tagType,
+        pageNo: pageNo,
+        pageSize: pageSize,
+        sortByMoney: sortByMoney,
+        sortByTime: sortByTime,
+      },
+    })
+    const data = response.data.data
+    data.list.forEach((item) => {
+      handleUrl(item)
+    })
+    return data
+  } catch (error) {
+    console.error('获取帖子失败', error)
+    throw error
+  }
 }
 
 // 获取任务列表
-export const getTasks = async (typeId, pageNo, pageSize) => {
+export const getTasks = async (pageNo, pageSize, tagType, tag, sortByTime, sortByMoney) => {
   try {
     console.log('开始获取任务')
-    const response = await getPosts(0, typeId, pageNo, pageSize)
+    const response = await getPosts(pageNo, pageSize, tagType, tag, sortByTime, sortByMoney, 0)
     console.log('获取任务成功:', response)
     return response
   } catch (error) {
@@ -133,10 +204,10 @@ export const getTasks = async (typeId, pageNo, pageSize) => {
 }
 
 // 获取商品列表
-export const getItems = async (pageNo, pageSize, typeId) => {
+export const getItems = async (pageNo, pageSize, tagType, tag, sortByTime, sortByMoney) => {
   try {
     console.log('开始获取商品')
-    const response = await getPosts(1, typeId, pageNo, pageSize)
+    const response = await getPosts(pageNo, pageSize, tagType, tag, sortByTime, sortByMoney, 1)
     console.log('获取商品成功:', response)
     return response
   } catch (error) {
@@ -229,6 +300,158 @@ export const getUserComments = async (userId, pageNo, pageSize) => {
     return response.data.data
   } catch (error) {
     console.error('获取收到的评论失败:', error)
+    throw error
+  }
+}
+
+// 生成帖子标题
+export const getPostTitle = async (content, type) => {
+  try {
+    console.log('开始获取帖子标题,内容', content)
+    const response = await ins.get('/api/post/post/title')
+    console.log('获取帖子标题成功:', response.data.data)
+    return response.data.data
+  } catch (error) {
+    console.error('获取帖子标题失败:', error)
+    throw error
+  }
+}
+
+// 登录
+export const postLogin = async (phone, password) => {
+  try {
+    console.log('开始登录, 手机:', phone, '密码:', password)
+
+    // 发起登录请求
+    const response = await ins.post('/api/user/login', {
+      phone: phone, // 手机号
+      password: password, // 密码
+    })
+    console.log('登录响应:', response)
+
+    // 检查响应是否成功
+    if (response.status === 200) {
+      if (response.data.status !== 0) {
+        throw new Error(response.data.msg)
+      }
+
+      console.log('登录成功:', response.data.data)
+      // 存储 token 到 localStorage
+      const token = response.data.data.token
+      if (token) {
+        localStorage.setItem('token', token) // 存储 token
+      }
+
+      return response.data.data
+    } else {
+      throw new Error(response.data.msg)
+    }
+  } catch (error) {
+    console.error('登录失败:', error)
+    throw error
+  }
+}
+
+// 注册
+export const postSignUp = async (phone, username, password, gender) => {
+  console.log('开始注册, 手机:', phone, '密码:', password, '用户名:', username, '性别:', gender)
+  try {
+    const res = await ins.post(
+      '/api/user/register',
+      {
+        phone: phone,
+        password: password,
+        username: username,
+        gender: gender,
+      },
+      { skipAuth: true },
+    )
+
+    console.log('注册响应:', res.data.msg)
+    if (res.data.status !== 0) {
+      throw new Error(res.data.msg) // 抛出错误，让调用者处理
+    }
+    return res.data // 正常返回数据
+  } catch (err) {
+    console.error('注册失败:', err)
+    throw err // 将错误抛出，让调用者处理
+  }
+}
+
+// 编辑用户信息
+export const putEditUserInfo = async (username, gender, avatarUrl) => {
+  try {
+    console.log('开始修改用户信息, 用户名:', username, '性别:', gender)
+    // 发起修改用户信息请求
+    const response = await ins.put('/api/user/info', {
+      username: username, // 用户名
+      gender: gender, // 性别
+    })
+    // 检查响应是否成功
+    if (response.status === 200) {
+      console.log('修改用户信息成功:', response.data.data)
+      return response.data.data
+    } else {
+      throw new Error(response.data.msg)
+    }
+  } catch (error) {
+    console.error('修改用户信息失败:', error)
+    throw error
+  }
+}
+
+// 创建帖子
+export const postCreatePost = async (postInfo) => {
+  console.log('开始创建帖子', postInfo)
+  try {
+    // 发起创建帖子请求
+    const response = await ins.post(
+      '/api/post/post',
+      postInfo.title,
+      postInfo.content,
+      postInfo.type,
+      postInfo.tagType,
+      postInfo.tagIds,
+      postInfo.picUrl,
+      postInfo.money,
+      postInfo.phone,
+      postInfo.address,
+    )
+    // 检查响应是否成功
+    if (response.status === 200) {
+      console.log('创建帖子成功:', response.data.data)
+      return response.data.data
+    } else {
+      throw new Error(response.data.msg)
+    }
+  } catch (error) {
+    console.error('创建帖子失败:', error)
+    throw error
+  }
+}
+
+// 上传文件
+export const postUpload = async (file) => {
+  try {
+    console.log('开始上传文件', file)
+    // 构造 FormData 对象
+    const formData = new FormData()
+    formData.append('file', file)
+    // 发起上传请求
+    const response = await ins.post('/api/user/common/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // 确保请求是文件上传
+      },
+    })
+    // 检查响应是否成功
+    if (response.status === 200) {
+      console.log('上传文件成功:', response.data.data)
+      return response.data.data
+    } else {
+      throw new Error(response.data.msg)
+    }
+  } catch (error) {
+    console.error('上传文件失败:', error)
     throw error
   }
 }

@@ -11,7 +11,6 @@
 
 // 根据图标名称获取路径
 const getIconPath = (iconName) => {
-  console.log(`/src/assets/images/categories/${iconName}.png`)
   return `/src/assets/images/categories/${iconName}.png`;
 };
 

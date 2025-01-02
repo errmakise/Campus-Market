@@ -11,12 +11,12 @@
 
       <!-- 帖子内容 -->
       <div class="post-content">
-        <textarea v-model="publishStore.formData.postContent" placeholder="输入帖子内容" class="post-textarea"
-          maxlength="200"></textarea>
+        <textarea v-model="publishStore.formData.content" placeholder="输入帖子内容" class="post-textarea" maxlength="200"
+          @input="handleContentInput"></textarea>
         <div class="content-line2">
           <van-uploader preview-size="18.5vw" class="uploader" v-model="publishStore.formData.fileList" multiple
             :max-count="3" />
-          <p class="textPrompt">{{ publishStore.formData.postContent.length }}/200</p>
+          <p class="textPrompt">{{ publishStore.formData.content.length }}/200</p>
         </div>
       </div>
 
@@ -25,11 +25,11 @@
         <span class="title">标题</span>
         <div class="post-title">
           <div class="title-line1">
-            <textarea v-model="publishStore.formData.postTitle" placeholder="输入标题" class="title-content" maxlength="20"
+            <textarea v-model="publishStore.formData.title" placeholder="输入标题" class="title-content" maxlength="20"
               clearable></textarea>
             <img src="@/assets/images/x.png" alt="x" class="x" @click="clearTitle" />
           </div>
-          <p class="textPrompt">{{ publishStore.formData.postTitle.length }}/20</p>
+          <p class="textPrompt">{{ publishStore.formData.title.length }}/20</p>
         </div>
 
         <div class="title">{{ cateTitle }}</div>
@@ -55,7 +55,7 @@
 
           <div class="reward-amount">
             ￥
-            <InputFrame v-model="publishStore.formData.reward" maxWidth="150" type="number" class="amount"
+            <InputFrame v-model="publishStore.formData.money" maxWidth="150" type="number" class="amount"
               :disabled="publishStore.formData.isDiscussed" />
           </div>
         </div>
@@ -96,11 +96,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { getPostTitle } from '@/api/api'
 import { useRouter, useRoute } from 'vue-router';
 import { usePublishStore } from '@/stores/publish';
-import TagsBar from '@/components/TagsBar.vue'; // 确保路径正确
-import InputFrame from '@/components/InputFrame.vue'; // 确保路径正确
+import debounce from 'lodash/debounce';
+import { showFailToast } from 'vant';
 
 const router = useRouter();
 const route = useRoute();
@@ -122,6 +122,33 @@ const presetAddresses = ref([
   // 更多地址...
 ]);
 
+
+// 防抖后的请求函数
+const fetchTitle = debounce(async () => {
+  const content = publishStore.formData.content.trim();
+
+  // 如果内容为空，不发送请求
+  if (!content) {
+    publishStore.formData.title = '';
+    return;
+  }
+
+  try {
+    // 调用后端接口获取标题
+    const response = await getPostTitle({ content: content, type: type.value });
+    publishStore.formData.title = response.generatedTitle || '生成标题失败';
+    console.log('自动生成的标题:', publishStore.formData.title);
+  } catch (error) {
+    console.error('获取标题失败:', error);
+  }
+}, 500); // 500ms 的防抖时间
+
+// 处理帖子内容输入
+const handleContentInput = () => {
+  fetchTitle(); // 调用防抖函数
+};
+
+
 // 选择预设地址
 const selectPresetAddress = (selectedAddress) => {
   publishStore.formData.address = selectedAddress; // 更新任务地点
@@ -139,14 +166,14 @@ const openMapSearch = () => {
 // 返回上一页
 const handleBack = () => {
   console.log('点击退出');
-  router.back();
+  router.push({ name: 'items' });
 };
 
 // 待议
 const toBeDiscussed = () => {
   publishStore.formData.isDiscussed = !publishStore.formData.isDiscussed;
   if (publishStore.formData.isDiscussed) {
-    publishStore.formData.reward = '0';
+    publishStore.formData.money = '0';
     console.log('待议');
   } else {
     console.log('取消待议');
@@ -180,13 +207,37 @@ const handleSelectedTags = (tags) => {
 
 // 清除标题
 const clearTitle = () => {
-  publishStore.formData.postTitle = '';
+  publishStore.formData.title = '';
 };
 
+
+
 // 发布按钮逻辑
-const handlePost = () => {
-  // 发布逻辑
-  console.log('发布内容:', publishStore.formData);
+const handlePost = async () => {
+  try {
+    // 发布逻辑
+    const picUrl = await publishStore.convertFileListToUrlsString()
+    console.log('图片地址', picUrl)
+    const data = {
+      "type": type.value,
+      "title": publishStore.formData.title,
+      "content": publishStore.formData.content,
+      "tagIds": publishStore.formData.selectedTags,
+      "money": publishStore.formData.money,
+      "phone": publishStore.formData.phone,
+      "lng": publishStore.formData.lng,
+      "lat": publishStore.formData.lat,
+      "address": publishStore.formData.address,
+      "picUrl": picUrl,
+    }
+    console.log('发布内容:', data);
+  } catch (error) {
+    showFailToast({
+      message: 'error',
+      duration: 1500,
+    })
+  }
+
 };
 
 // 在发布页挂载时设置类别和检查是否有传回的地点信息
@@ -217,11 +268,7 @@ onMounted(async () => {
   }
 
   console.log('帖子类型', type.value);
-  if (route.query.location) {
-    publishStore.formData.location = JSON.parse(route.query.location);
-    publishStore.formData.address = publishStore.formData.location.name;
-    console.log('选中的位置', publishStore.formData.location);
-  }
+  publishStore.formData.type = type.value;
 
   // 根据当前类别获取标签选项
   const currentCategory = categories.value[publishStore.formData.activeIndex]?.id;

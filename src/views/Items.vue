@@ -31,7 +31,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { usePagination } from "@/utils/usePagination";
-import { getItems } from "@/api/api.js";
+import { getLatestItems } from "@/api/api.js";
 
 const masonryContainer = ref(null);
 // 分类数据
@@ -49,11 +49,13 @@ const categories = [
 ];
 
 // 使用封装的分页逻辑，传入当前类别和选中的标签
-const { items, loading, hasMore, fetchData, refreshItems, currentPage } = usePagination(
-  (page, pageSize) => getItems(page, pageSize, 0),
-  10
-);
-//, tagsOptions.value[activeTagIndex.value]?.id
+const {
+  items,
+  loading,
+  hasMore,
+  fetchData,
+  refreshItems,
+} = usePagination(getLatestItems, 10); // 每页 10 条
 
 
 // 滚动加载防抖
@@ -66,13 +68,13 @@ const handleScroll = () => {
 
     const isBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 10;
     if (isBottom && !loading.value) {
-      currentPage.value += 1;
       fetchData();
     }
   }, 200);
 };
 
 // 下拉刷新逻辑
+
 const isRefreshing = ref(false);
 const onRefresh = async () => {
   isRefreshing.value = true;

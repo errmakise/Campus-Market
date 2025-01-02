@@ -3,6 +3,11 @@
     <div class="login-form">
       <span class="text">手机号</span>
       <div class="input-container">
+        <input class="input" v-model="phone">
+      </div>
+
+      <span class="text">用户名</span>
+      <div class="input-container">
         <input class="input" v-model="username">
       </div>
 
@@ -10,13 +15,14 @@
       <div class="input-container">
         <input class="input" v-model="password">
       </div>
+      <van-radio-group v-model="gender" class="gender-list">
+        <van-radio name="1" checked-color="#c2bdd4">男</van-radio>
+        <van-radio name="2" checked-color="#c2bdd4">女</van-radio>
+      </van-radio-group>
 
-
-      <button class="login-button" @click="handleLogin">登录</button>
-
-      <div class="buttom">
-        <span @click="handleForget">忘记密码</span>
-        <span @click="handleSignUp">注册</span>
+      <div class="button-list">
+        <button class="cancle button" @click="handleCancle">返回</button>
+        <button class="signup button" @click="handleSignup">注册</button>
       </div>
     </div>
     <img src="/src/assets/images/login-back-bam.png" class="back-img">
@@ -25,37 +31,65 @@
 </template>
 
 <script setup>
-import { postLogin } from "@/api/api";
+import { postSignUp } from "@/api/api";
+const gender = ref("");
+const phone = ref("");
 const username = ref("");
 const password = ref("");
 const router = useRouter();
-const handleLogin = () => {
-  console.log("登录");
+const handleCancle = () => {
+  console.log("取消注册");
+  router.push("/login");
+}
+// 检查手机号是否正确
+const isValidPhone = (phone) => {
+  const phoneRegex = /^1[3-9]\d{9}$/; // 检查手机号是否是以 13-19 开头的11位数字
+  return phoneRegex.test(phone);
+};
+
+const handleSignup = () => {
+  console.log("注册");
   // 检查手机号
-  if (!username.value) {
+  if (!isValidPhone(phone.value)) {
     showFailToast({
-      message: "请输入手机号",
+      message: "请输入正确的手机号",
       duration: 1000,
     });
-    return;
+    return; // 中断注册流程
+  }
+  if (!username.value) {
+    showFailToast({
+      message: "请输入用户名",
+      duration: 1000,
+    });
+    return; // 中断注册流程
   }
   if (!password.value) {
     showFailToast({
       message: "请输入密码",
       duration: 1000,
     });
-    return;
+    return; // 中断注册流程
   }
-  postLogin(
+  if (!gender.value) {
+    showFailToast({
+      message: "请选择性别",
+      duration: 1000,
+    });
+    return; // 中断注册流程
+  }
+
+  postSignUp(
+    phone.value,
     username.value,
-    password.value
+    password.value,
+    gender.value
   ).then((res) => {
-    console.log(res);
     showSuccessToast({
-      message: "登录成功",
+      message: "注册成功",
       duration: 1000,
       onClose: () => {
-        router.push("/items");
+        router.push("/login");
       }
     });
   }).catch((err) => {
@@ -64,18 +98,26 @@ const handleLogin = () => {
       duration: 1000,
     });
   });
-}
-const handleForget = () => {
-  console.log("忘记密码");
+
 }
 
-const handleSignUp = () => {
-  console.log("注册");
-  router.push("/signUp");
-}
 </script>
 
 <style scoped>
+.button-list {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.gender-list {
+  display: flex;
+  gap: 2vw;
+  width: 100%;
+  justify-content: end;
+  margin-bottom: 3vh;
+}
+
 .back-img {
   position: fixed;
   height: 60%;
@@ -94,13 +136,22 @@ const handleSignUp = () => {
   font-weight: 600;
 }
 
-.login-button {
-  width: 100%;
-  background-color: black;
-  color: white;
+.button {
+  width: 32%;
   border-radius: 10px;
   padding: 1vh 0;
   font-size: 16px;
+  border: none;
+}
+
+.cancle {
+  background-color: #F0F0F0;
+}
+
+.signup {
+  background-color: black;
+  color: white;
+
 }
 
 .login-input {

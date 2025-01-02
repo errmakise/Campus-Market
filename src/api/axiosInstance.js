@@ -2,17 +2,20 @@ import axios from 'axios'
 
 const axiosInstance = axios.create({
   // 网络请求的公共配置
-  baseURL: 'http://127.0.0.1:4523/m1/5505077-5181244-default',
+  baseURL: '/api',
   timeout: 10000, // 请求超时时间
 })
 
 // 请求拦截器
 axiosInstance.interceptors.request.use(
   (config) => {
-    // 在发送请求之前做些什么
-    // 比如添加token到请求头
-    const token = localStorage.getItem('token')
-    config.headers.Authorization = `Bearer ${token}`
+    // 判断是否需要跳过 token
+    if (!config.skipAuth) {
+      const token = localStorage.getItem('token')
+      if (token) {
+        config.headers.Authorization = token
+      }
+    }
     return config
   },
   (error) => {

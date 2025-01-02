@@ -59,6 +59,11 @@ const router = createRouter({
       component: () => import('../views/PostDetailTrading.vue'),
     },
     {
+      path: '/signUp',
+      name: 'signUp',
+      component: () => import('../views/SignUp.vue'),
+    },
+    {
       path: '/items',
       name: 'items',
       component: () => import('../views/Items.vue'),
@@ -75,6 +80,11 @@ const router = createRouter({
       component: () => import('../views/User.vue'),
     },
     //#region 用户页跳转
+    {
+      path: '/user/information',
+      name: 'information',
+      component: () => import('../views/user-router/Information.vue'),
+    },
     {
       path: '/user/postedTasks',
       name: 'postedTasks',

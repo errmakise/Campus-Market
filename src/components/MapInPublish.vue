@@ -61,16 +61,16 @@ const props = defineProps({
     type: Array,
     default: () => [
       // 用户自定义的点位
-      { name: '用户点位1', position: [116, 39.915], type: 'user', id: 1 },
-      { name: '用户点位2', position: [116.404, 39.915], type: 'user', id: 2 },
+      { name: '用户点位1', longitude: 116, latitude: 39.915, type: 'user', id: 1 },
+      { name: '用户点位2', longitude: 116.404, latitude: 39.915, type: 'user', id: 2 },
     ],
   },
   sharedMarkers: {
     type: Array,
     default: () => [
       // 其他用户共享的点位
-      { name: '共享点位1', position: [116, 39], type: 'shared', id: 3 },
-      { name: '共享点位2', position: [116.397, 39.921], type: 'shared', id: 4 },
+      { name: '共享点位1', longitude: 116, latitude: 39, type: 'shared', id: 3 },
+      { name: '共享点位2', longitude: 116.397, latitude: 39.921, type: 'shared', id: 4 },
     ],
   }
 });
@@ -83,52 +83,44 @@ const markers = ref([...props.userDefinedMarkers, ...props.sharedMarkers]);
 
 
 
-let sharedMarkerInstance = null; // 当前显示的共享标记实例
+let temporaryMarkerInstance = null; // 当前显示的共享标记实例
 
 //处理搜索框选中地址后，标点的逻辑
 const selectSearchResult = (result) => {
 
   console.log("父组件接收搜索提示", result);
   // 隐藏共享标记
-  if (sharedMarkerInstance) {
-    sharedMarkerInstance.setMap(null);
-    sharedMarkerInstance = null;
+  if (temporaryMarkerInstance) {
+    temporaryMarkerInstance.setMap(null);
+    temporaryMarkerInstance = null;
   }
   // 处理用户自定义标记的逻辑
   if (tempMarker.value) {
     tempMarker.value.setMap(null);
   }
 
-  map.value.setCenter(result.position);
-
+  map.value.setCenter([result.longitude, result.latitude]);
   // map.value.panTo(result.position, true); 快速跳转
 
   selectedMarker.value = result;
 
 
 
-  if (result.type === 'shared') {
+  if (result.type !== 'user') {
     // 显示共享标记
-    if (sharedMarkerInstance) {
-      sharedMarkerInstance.setMap(null);
+    if (temporaryMarkerInstance) {
+      temporaryMarkerInstance.setMap(null);
     }
-    sharedMarkerInstance = new AMap.Marker({
-      position: result.position,
-      map: map.value,
-      title: result.name,
-      //icon: 'path/to/shared-marker-icon.png', // 自定义共享标记图标
-    });
+    temporaryMarkerInstance = createMarker(result);
+    showConfirmAddressPopup(result);
+  };
 
-    // 绑定点击事件
-    sharedMarkerInstance.on('click', () => {
-      showConfirmAddressPopup(result);
-    });
-  }
-
-  showConfirmAddressPopup(result);
-};
+}
 
 
+import { usePublishStore } from '@/stores/publish';
+
+const publishStore = usePublishStore();
 
 //弹窗相关
 //#region
@@ -141,10 +133,13 @@ const showConfirmAddressPopup = (marker) => {
 const confirmAddressSelection = () => {
   console.log("确认地址选择", selectedMarker.value);
   showAddressConfirmPopup.value = false;
-
+  // 更新 Store 中的表单数据
+  publishStore.formData.address = selectedMarker.value.name;
+  publishStore.formData.lng = selectedMarker.value.longitude;
+  publishStore.formData.lat = selectedMarker.value.latitude;;
   // 执行页面跳转并传递地址信息
-  router.push({ name: 'publish', params: { type: 'task' }, query: { location: JSON.stringify(selectedMarker.value) } });
-
+  // router.push({ name: 'publish', params: { type: 'task' }, query: { location: JSON.stringify(selectedMarker.value) } });
+  router.push({ name: 'publish', params: { type: 'task' } })
 };
 
 // 取消地址选择
@@ -214,17 +209,17 @@ const cancelUpload = () => {
 // 创建标记
 const createMarker = (marker) => {
   const amapMarker = new AMap.Marker({
-    position: marker.position,
+    position: [marker.longitude, marker.latitude],
     map: map.value,
     title: marker.name,
   });
 
-  amapMarker.on('click', () => {
-    if (marker.type === 'shared') {
-      showConfirmAddressPopup(marker);
-    } else if (marker.type === 'map' || marker.type === 'user') {
+  amapMarker.on('click', (e) => {
+    if (marker.type === 'shared' || marker.type === 'map' || marker.type === 'user') {
       showConfirmAddressPopup(marker);
     }
+    e.originEvent.stopPropagation(); // 阻止事件传播
+    e.originEvent.preventDefault();  // 阻止默认行为
   });
 
   return amapMarker;
@@ -276,9 +271,9 @@ const initializeMap = (AMap) => {
       const { lng, lat } = e.lnglat;
 
       // 隐藏共享标记
-      if (sharedMarkerInstance) {
-        sharedMarkerInstance.setMap(null);
-        sharedMarkerInstance = null;
+      if (temporaryMarkerInstance) {
+        temporaryMarkerInstance.setMap(null);
+        temporaryMarkerInstance = null;
       }
 
       // 处理用户自定义标记的逻辑
@@ -347,9 +342,9 @@ onUnmounted(() => {
     tempMarker.value = null;
   }
 
-  if (sharedMarkerInstance) {
-    sharedMarkerInstance.setMap(null);
-    sharedMarkerInstance = null;
+  if (temporaryMarkerInstance) {
+    temporaryMarkerInstance.setMap(null);
+    temporaryMarkerInstance = null;
   }
 });
 </script>
